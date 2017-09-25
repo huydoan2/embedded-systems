@@ -1,0 +1,1 @@
+void susan_thin(uchar r[76*95], uchar mid[76*95], int x_size, int y_size);
