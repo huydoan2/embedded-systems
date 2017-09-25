@@ -1,0 +1,1 @@
+void put_image(char filename[100], uchar in[76 * 95], int x_size, int y_size);

@@ -1,0 +1,1 @@
+void edge_draw(uchar in[76*95], mid[76*95], int x_size, int y_size, int drawing_mode);
