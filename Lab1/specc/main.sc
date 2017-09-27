@@ -3,13 +3,13 @@
 import "c_queue";
 import "susan";
 
+
 behavior Main(){
 	char filename[80];
 	const unsigned long SIZE = 7220;
-	const unsigned long MID_SIZE = 3610;
 	unsigned char img[SIZE];
-	c_queue env_to_susan(MID_SIZE);
-	c_queue susan_to_env(MID_SIZE);
+	c_queue env_to_susan(SIZE);
+	c_queue susan_to_env(SIZE);
 	susan susan_module(env_to_susan, susan_to_env);
 
 	int getint(FILE* fd)
@@ -74,9 +74,11 @@ behavior Main(){
 
 	   fclose(fd);
 
-	   env_to_susan.send(img, SIZE);
-	   /* computation in the middle */
-	   susan_to_env.receive(&img, SIZE);
+	   env_to_susan.send(img, SIZE); 
+           susan_module.main(); 
+           susan_to_env.receive(&img, SIZE);
+
+
 	   if((fd = fopen(argv[2], "wb")) == NULL){
 	   		printf("Can't open the output file to write\n");
 	   		return 1;

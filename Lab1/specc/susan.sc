@@ -14,10 +14,10 @@ behavior susan(i_receiver env_to_susan, i_sender susan_to_env){
    //Channels for internal communication
    const unsigned long X_SIZE = 76;
    const unsigned long Y_SIZE = 95;
-   const unsigned long IMG_SIZE = 3610; 
-   const unsigned long R_SIZE = 6;
-   const unsigned long BP_SIZE = 1500;
-   const unsigned long MID_SIZE = 3610;
+   const unsigned long IMG_SIZE = 7720; 
+   const unsigned long R_SIZE = 7720;
+   const unsigned long BP_SIZE = 516;
+   const unsigned long MID_SIZE = 7720;
 
    c_queue susan_to_get_image(IMG_SIZE);
    c_queue put_image_to_susan(IMG_SIZE);
@@ -77,7 +77,7 @@ behavior susan(i_receiver env_to_susan, i_sender susan_to_env){
       unsigned char img_in[X_SIZE * Y_SIZE];
       unsigned char img_out[X_SIZE * Y_SIZE];
 
-      env_to_susan.receive(&img_in, X_SIZE*Y_SIZE);
+      env_to_susan.receive(img_in, X_SIZE*Y_SIZE);
       susan_to_get_image.send(img_in, X_SIZE*Y_SIZE);
 
 		par{
@@ -89,7 +89,7 @@ behavior susan(i_receiver env_to_susan, i_sender susan_to_env){
 			P_image.main();
 		}
 
-      put_image_to_susan.receive(&img_out, X_SIZE*Y_SIZE);
+      put_image_to_susan.receive(img_out, X_SIZE*Y_SIZE);
       susan_to_env.send(img_out, X_SIZE*Y_SIZE);
 		
 	}
