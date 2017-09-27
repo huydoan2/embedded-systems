@@ -12,10 +12,7 @@ behavior edge_draw(i_receiver port_r_img, i_receiver port_r_mid, i_sender port_s
 
 	void main()
 	{
-		for(i = 0; i < size; i++)
-		{
-			port_r_img.receive(&img[i], sizeof(unsigned char));
-		}
+		port_r_img.receive(&img, size);
 
 		for(j = 0; j < size; j++)
 		{
@@ -29,7 +26,6 @@ behavior edge_draw(i_receiver port_r_img, i_receiver port_r_mid, i_sender port_s
 			}
 		}
 
-		for(k = 0; k < size; k++)
-			port_s_img.send(img + k, sizeof(unsigned char));
+		port_s_img.send(img, size);
 	}
 };
