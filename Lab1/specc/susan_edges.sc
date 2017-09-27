@@ -1,5 +1,6 @@
 
 #include <stdio.h>
+#include <math.h>
 
 #define X_SIZE  76
 #define Y_SIZE  95
@@ -9,18 +10,19 @@
 
 import "c_queue";
 
-void susan_edges(i_receiver port_img_in, i_receiver port_bp_in, i_sender port_mid_out, i_sender port_r_out) 
+behavior susan_edges(i_receiver port_img_in, i_receiver port_bp_in, i_sender port_mid_out, i_sender port_r_out) 
 {
 
-   //Local variables created in susan_edges to be forwarded
-   int r[IMG_SIZE];
-   unsigned char mid[IMG_SIZE];
-   unsigned char img[IMG_SIZE];
-   unsigned char bp[BP_SIZE];
+
 
    void main(void)
    {
-
+      //Local variables created in susan_edges to be forwarded
+      int r[IMG_SIZE] = {0};
+      unsigned char mid[IMG_SIZE] = {100};
+      unsigned char img[IMG_SIZE];
+      unsigned char bp[BP_SIZE];
+      
       //Local variables created in susan_edges NOT to be forwarded
       float z;
       int   do_symmetry, i, j, m, n, a, b, x, y, w;
@@ -35,17 +37,11 @@ void susan_edges(i_receiver port_img_in, i_receiver port_bp_in, i_sender port_mi
       int bp_index = 258;
 
       //Read in arrays and other variables
-      port_img_in.receive(in, IMG_SIZE);
+      port_img_in.receive(img, IMG_SIZE);
       port_bp_in.receive(bp, BP_SIZE);
 
-      for(i=0; i< X_SIZE*Y_SIZE; i++)
-      {
-         r[i] = 0;
-         mid[i] = 100;
-      }
 
-
-       for (i = 3; i < Y_SIZE - 3; i++)
+       for (i = 3; i < Y_SIZE - 3; i++) {
           for (j = 3; j < X_SIZE - 3; j++) {
              n = 100;
              p = img_index + (i - 3)*X_SIZE + j - 1;
@@ -101,15 +97,16 @@ void susan_edges(i_receiver port_img_in, i_receiver port_bp_in, i_sender port_mi
              n += bp[cp - img[p++]];
              n += bp[cp - img[p]];
 
-             if (n <= max_no)
-                r[i*X_SIZE + j] = max_no - n;
+             if (n <= max_no_edges)
+                r[i*X_SIZE + j] = max_no_edges - n;
           }
+       }
 
-       for (i = 4; i < Y_SIZE - 4; i++)
+       for (i = 4; i < Y_SIZE - 4; i++) {
           for (j = 4; j < X_SIZE - 4; j++) {
              if (r[i*X_SIZE + j] > 0) {
                 m = r[i*X_SIZE + j];
-                n = max_no - m;
+                n = max_no_edges - m;
                 cp = bp_index + img[i*X_SIZE + j];
 
                 if (n > 600) {
@@ -268,10 +265,12 @@ void susan_edges(i_receiver port_img_in, i_receiver port_bp_in, i_sender port_mi
                 }
              }
           }
-   
+    
+      }
+
       //Write into the output ports
-      port_mid.out.write(mid, IMG_SIZE);
-      port_r_out.write(r, IMG_SIZE);
+      port_mid_out.send(mid, IMG_SIZE);
+      port_r_out.send(r, IMG_SIZE);
    
    }
 };

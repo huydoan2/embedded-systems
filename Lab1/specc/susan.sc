@@ -2,96 +2,84 @@
 
 #define X_SIZE 76
 #define Y_SIZE 95
-#define ARR_QUEUE_SIZE 3610 
-#define INT_QUEUE_SIZE 6
+#define IMG_SIZE 3610 
+#define R_SIZE 6
+#define BP_SIZE 1500
+#define MID_SIZE 3610
 
 import "c_queue"
 
-behavior Main(){
-   /* {{{ vars */
-	char filename[80],
-		*tcp;
+behavior susan(i_receiver env_to_susan, i_sender susan_to_env){
 
-   FILE   *ofp;
-
-   float  dt = 4.0;
-   int    *r,
-		argindex = 3,
-		bt = 20,
-		principle = 0,
-		thin_post_proc = 1,
-		three_by_three = 0,
-		drawing_mode = 0,
-		max_no_edges = 2650,
-		i,
-		x_size, y_size;
+   //Channels for internal communication
    
-   // uchar in[X_SIZE * Y_SIZE];
-   // uchar mid[X_SIZE * Y_SIZE];
-   // uchar bp[516];
-   // int   r[X_SIZE*Y_SIZE];
+   c_queue c_get_image_to_susan_edges_uchar(IMG_SIZE);
+   c_queue c_get_image_to_edge_draw_uchar(IMG_SIZE);
 
-   c_queue c_arr_main_get_image(50);
-   c_queue c_int_main_get_image(INT_QUEUE_SIZE);
-   c_queue c_int_main_susan_edges(INT_QUEUE_SIZE);
+   c_queue c_setup_brightness_lut_to_susan_edges_uchar(BP_SIZE);
 
-   c_queue c_arr_get_image_susan_edges(ARR_QUEUE_SIZE);
+   c_queue c_susan_edges_to_susan_thin_uchar(MID_SIZE);
+   c_queue c_susan_edges_to_susan_thin_int(R_SIZE);
    
-   c_queue c_arr_setup_brightness_lut_susan_edges(ARR_QUEUE_SIZE);
+   c_queue c_susan_thin_to_edge_draw_uchar(MID_SIZE);
 
-   c_queue c_arr_susan_edges_susan_thin(QUEUE_SIZE);
-   c_queue c_int_susan_edges_susan_thin(QUEUE_SIZE);
-   c_queue c_arr_susan_thin_edge_draw(QUEUE_SIZE);
-   c_queue c_int_susan_thin_edge_draw(QUEUE_SIZE);
-   c_queue c_arr_edge_draw_put_image(QUEUE_SIZE);
-   c_queue c_int_edge_draw_put_image(QUEUE_SIZE);
+   c_queue c_edge_draw_to_put_image(IMG_SIZE);
 
-   c_queue c_arr_main_put_image(50);
+   
+   //Definition of individual behaviors
+   get_image G_image       (
+                           c_env_to_get_image_uchar, 
+                           c_get_image_to_susan_edges_uchar
+                           );
 
-   get_image spec_get_image(c_arr_main_get_image,
-							c_arr_get_image_susan_edges);
+   setup_brightness_lut S_B_lut(
+                           c_setup_brightness_lut_to_susan_edges_uchar
+                           );
 
-   setup_brightness_lut spec_setup_brightness_lut(c_arr_setup_brightness_lut_susan_edges);
+   susan_edges S_edges     (
+                           c_get_images_to_susan_edges_uchar, 
+                           c_setup_brightness_lut_to_susan_edges_uchar, 
+                           c_susan_edges_to_susan_thin_uchar, 
+                           c_susan_edges_to_susan_thin_int
+                           );
+   
+   susan_thin S_thin       (
+                           c_susan_edges_to_susan_thin_uchar, 
+                           c_susan_edges_to_susan_thin_int, 
+                           c_susan_thin_to_edge_draw_uchar
+                           );
 
-	susan_edges spec_susan_edges(c_arr_setup_brightness_lut_susan_edges,	/* for in */
-								 c_arr_get_image_susan_edges,				/* for bp */
-								 c_int_main_susan_edges,					/* for max_no */
-								 c_arr_susan_edges_susan_thin,
-								 c_int_susan_edges_susan_thin);
-	
-	susan_thin spec_susan_thin(c_arr_susan_edges_susan_thin,
-							   c_int_susan_edges_susan_thin,
-							   c_arr_susan_thin_edge_draw,
-							   c_int_susan_thin_edge_draw);
+   edge_draw E_draw        (
+                           c_susan_thin_to_edge_draw_uchar,
+                           c_get_image_to_edge_draw_uchar,
+                           c_edge_draw_to_put_image_uchar
+                           );
 
-	edge_draw spec_edge_draw(c_arr_susan_thin_edge_draw,
-							   c_int_susan_thin_edge_draw,
-							   c_arr_edge_draw_put_image,
-							   c_int_edge_draw_put_image);
-
-	put_image(c_arr_edge_draw_put_image,
-			  c_int_edge_draw_put_image,
-			  c_arr_main_put_image);
+   put_image P_image       (
+                           c_edge_draw_to_put_image_uchar
+                           );
 
 	
-	int main(int argc, char argv[]){
-		if (argc<3){
-			printf("Enter input and output files\n");
-			return 0;
-		}
+   int main(void)
+   {
+      
+      uchar img_in[X_SIZE * Y_SIZE];
+      uchar img_out[X_SIZE * Y_SIZE];
+
+      env_to_susan.read(img_in, X_SIZE*Y_SIZE);
 
 		par{
-			spec_getimage.main();
-			spec_setup_brightness_lut.main();
-			spec_susan_edges.main();
-			spec_susan_thin.main();
-			spec_edge_draw.main();
-			spec_put_image.main();
+			G_image.main();
+			S_B_lut.main();
+			S_edges.main();
+			S_thin.main();
+			E_draw.main();
+			P_image.main();
 		}
 
-		c_arr_main_get_image.send(filename, 80);
-
-		retunr 0;
+      susan_to_env.write(img_out, X_SIZE*Y_SIZE);
+		
+      return 0;
 	}
 
 };
