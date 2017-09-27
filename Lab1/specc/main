@@ -1,11 +1,11 @@
 #include <stdio.h>
 
-import "c_queue";
-import "susan";
+import c_queue
+import susan
 
 behavior Main(){
 	char filename[80];
-	const int SIZE = 7220;
+	const int SIZE = 7220
 	unsigned char img[7220];
 	c_queue c_arr_main_susan(3610);
 	susan susan_module(c_arr_main_susan);
@@ -20,10 +20,8 @@ behavior Main(){
 	   {
 	      if (c == '#')    /* if we're at a comment, read to end of line */
 	         fgets(dummy, 9000, fd);
-	      if (c == EOF){
-	         printf("Image is not binary PGM.\n");
-		 return 1;
-		}
+	      if (c == EOF)
+	         exit_error("Image %s not binary PGM.\n", "is");
 	      if (c >= '0' && c <= '9')
 	         break;   /* found what we were looking for */
 	      c = getc(fd);
@@ -41,14 +39,14 @@ behavior Main(){
 	   return (i);
 	}
 
-	int main(int argc, char * argv[]){
+	int main(int argc, char argv[]){
 		FILE* fd;
 
 		char header[100];
 	    int  tmp;
 
-	   if ((fd = fopen(argv[1], "rb")) == NULL)
-	   		return 1;
+	   if ((fd = fopen(filename, "rb")) == NULL)
+	   		return
 
 	   /* {{{ read header */
 
@@ -65,7 +63,9 @@ behavior Main(){
 
 	   /* }}} */
 
-	   if (fread(img, 1, SIZE, fd) == 0){
+	   //*in = (uchar *) malloc(*x_size * *y_size);
+
+	   if (fread(*in, 1, SIZE, fd) == 0){
 	      printf("Image %s is wrong size.\n", filename);
 	      return 1;
 	   }
@@ -73,15 +73,5 @@ behavior Main(){
 	   fclose(fd);
 
 	   c_arr_main_susan.send(img, SIZE);
-	   /* computation in the middle */
-	   c_arr_main_susan.receive(img, SIZE);
-	   if(fd = fopen(argv[2], "wb") == NULL){
-	   		printf("Can't open the output file to write\n");
-	   		return 1;
-	   }
-
-		fwrite(img, SIZE, 1, fd);
-		fclose(fd);
-
    }
 };
