@@ -1,8 +1,7 @@
 #include <stdio.h>
 import "c_queue";
 
-behavior get_image(i_receiver port_arr_in,
-					i_sender port_arr_out)
+behavior get_image(i_receiver port_arr_in, i_sender port_arr_out, i_sender port_arr_out_2)
 {
 	char filename[100];
 	const int SIZE = 7220;
@@ -11,5 +10,6 @@ behavior get_image(i_receiver port_arr_in,
 	void main(void){
 		port_arr_in.receive(img, SIZE);
 		port_arr_out.send(img, SIZE);
+		port_arr_out_2.send(img, SIZE);
 	}
 };
