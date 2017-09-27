@@ -222,7 +222,6 @@ behavior susan_thin(i_receiver port_mid_in, i_receiver port_r_in, i_sender port_
 
                 /* }}} */
                    }
-                }
       
       //Write output variables to be forwarded
       port_r_out.send(mid, IMG_SIZE);
