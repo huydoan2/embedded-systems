@@ -8,8 +8,8 @@ behavior get_image(i_receiver port_arr_in,
 					i_sender port_arr_out)
 {
 	char filename[100];
-	uchar in[X_SIZE*Y_SIZE];
-
+	uchar img[X_SIZE*Y_SIZE];
+	/*
 	int getint(FILE *fd){
 	   int c, i;
 	   char dummy[10000];
@@ -37,9 +37,11 @@ behavior get_image(i_receiver port_arr_in,
 
 	   return (i);
 	}
+	*/
 
 	void main(void){
 		port_arr_in.receive(filename, 80);
+		/*
 		FILE *fd;
 		char header[100];
 		int tmp;
@@ -66,7 +68,9 @@ behavior get_image(i_receiver port_arr_in,
 		}
 
 		fclose(fd);
+		*/
 
-		port_arr_out.send(in, X_SIZE*Y_SIZE);
+		port_arr_in.receive(img, X_SIZE*Y_SIZE);
+		port_arr_out.send(img, X_SIZE*Y_SIZE);
 	}
 }
