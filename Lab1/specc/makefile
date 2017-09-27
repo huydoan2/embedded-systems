@@ -7,7 +7,7 @@
 
 # --- macros -------------------------------------------------------------
 
-ALL	= susan
+ALL	= main
 
 SCC	= scc
 SCCOPT	= -vv -w -g -d
