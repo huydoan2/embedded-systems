@@ -28,7 +28,6 @@ behavior susan_thin(i_receiver port_mid_in, i_receiver port_r_in, i_sender port_
 
       // Additional variables for indices
       int mid_index = 0; 
-      int bp_index = 258;
 
       //Read input variables
       port_mid_in.receive(mid, X_SIZE * Y_SIZE);
