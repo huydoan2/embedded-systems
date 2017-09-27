@@ -7,12 +7,22 @@
 #define BP_SIZE 1500
 #define MID_SIZE 3610
 
-import "c_queue"
+import "c_queue";
+import "get_image";
+import "setup_brightness_lut";
+import "susan_edges";
+import "susan_thin";
+import "edge_draw";
+import "put_image";
+
 
 behavior susan(i_receiver env_to_susan, i_sender susan_to_env){
 
    //Channels for internal communication
    
+   c_queue env_to_susan(IMG_SIZE);
+   c_queue susan_to_env(IMG_SIZE);
+
    c_queue c_get_image_to_susan_edges_uchar(IMG_SIZE);
    c_queue c_get_image_to_edge_draw_uchar(IMG_SIZE);
 
@@ -29,7 +39,8 @@ behavior susan(i_receiver env_to_susan, i_sender susan_to_env){
    //Definition of individual behaviors
    get_image G_image       (
                            c_env_to_get_image_uchar, 
-                           c_get_image_to_susan_edges_uchar
+                           c_get_image_to_susan_edges_uchar,
+                           c_get_image_to_edge_draw_uchar
                            );
 
    setup_brightness_lut S_B_lut(
@@ -50,13 +61,14 @@ behavior susan(i_receiver env_to_susan, i_sender susan_to_env){
                            );
 
    edge_draw E_draw        (
-                           c_susan_thin_to_edge_draw_uchar,
                            c_get_image_to_edge_draw_uchar,
+                           c_susan_thin_to_edge_draw_uchar,
                            c_edge_draw_to_put_image_uchar
                            );
 
    put_image P_image       (
-                           c_edge_draw_to_put_image_uchar
+                           c_edge_draw_to_put_image_uchar,
+                           c_susan_to_env
                            );
 
 	
@@ -67,6 +79,7 @@ behavior susan(i_receiver env_to_susan, i_sender susan_to_env){
       uchar img_out[X_SIZE * Y_SIZE];
 
       env_to_susan.read(img_in, X_SIZE*Y_SIZE);
+      env_to_susan.send(img_in, X_SIZE*Y_SIZE);
 
 		par{
 			G_image.main();
@@ -77,7 +90,8 @@ behavior susan(i_receiver env_to_susan, i_sender susan_to_env){
 			P_image.main();
 		}
 
-      susan_to_env.write(img_out, X_SIZE*Y_SIZE);
+      susan_to_env.read(img_out, X_SIZE*Y_SIZE);
+      susan_to_env.send(img_out, X_SIZE*Y_SIZE);
 		
       return 0;
 	}
