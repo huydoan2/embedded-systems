@@ -1,12 +1,5 @@
 #include <stdio.h>
 
-#define X_SIZE 76
-#define Y_SIZE 95
-#define IMG_SIZE 3610 
-#define R_SIZE 6
-#define BP_SIZE 1500
-#define MID_SIZE 3610
-
 import "c_queue";
 import "get_image";
 import "setup_brightness_lut";
@@ -19,9 +12,15 @@ import "put_image";
 behavior susan(i_receiver env_to_susan, i_sender susan_to_env){
 
    //Channels for internal communication
-   
-   c_queue env_to_susan(IMG_SIZE);
-   c_queue susan_to_env(IMG_SIZE);
+   const unsigned long X_SIZE = 76;
+   const unsigned long Y_SIZE = 95;
+   const unsigned long IMG_SIZE = 3610; 
+   const unsigned long R_SIZE = 6;
+   const unsigned long BP_SIZE = 1500;
+   const unsigned long MID_SIZE = 3610;
+
+   c_queue susan_to_get_image(IMG_SIZE);
+   c_queue put_image_to_susan(IMG_SIZE);
 
    c_queue c_get_image_to_susan_edges_uchar(IMG_SIZE);
    c_queue c_get_image_to_edge_draw_uchar(IMG_SIZE);
@@ -33,12 +32,12 @@ behavior susan(i_receiver env_to_susan, i_sender susan_to_env){
    
    c_queue c_susan_thin_to_edge_draw_uchar(MID_SIZE);
 
-   c_queue c_edge_draw_to_put_image(IMG_SIZE);
+   c_queue c_edge_draw_to_put_image_uchar(IMG_SIZE);
 
    
    //Definition of individual behaviors
    get_image G_image       (
-                           c_env_to_get_image_uchar, 
+                           susan_to_get_image, 
                            c_get_image_to_susan_edges_uchar,
                            c_get_image_to_edge_draw_uchar
                            );
@@ -48,7 +47,7 @@ behavior susan(i_receiver env_to_susan, i_sender susan_to_env){
                            );
 
    susan_edges S_edges     (
-                           c_get_images_to_susan_edges_uchar, 
+                           c_get_image_to_susan_edges_uchar, 
                            c_setup_brightness_lut_to_susan_edges_uchar, 
                            c_susan_edges_to_susan_thin_uchar, 
                            c_susan_edges_to_susan_thin_int
@@ -68,18 +67,18 @@ behavior susan(i_receiver env_to_susan, i_sender susan_to_env){
 
    put_image P_image       (
                            c_edge_draw_to_put_image_uchar,
-                           c_susan_to_env
+                           put_image_to_susan
                            );
 
 	
-   int main(void)
+   void main(void)
    {
       
-      uchar img_in[X_SIZE * Y_SIZE];
-      uchar img_out[X_SIZE * Y_SIZE];
+      unsigned char img_in[X_SIZE * Y_SIZE];
+      unsigned char img_out[X_SIZE * Y_SIZE];
 
-      env_to_susan.read(img_in, X_SIZE*Y_SIZE);
-      env_to_susan.send(img_in, X_SIZE*Y_SIZE);
+      env_to_susan.receive(&img_in, X_SIZE*Y_SIZE);
+      susan_to_get_image.send(img_in, X_SIZE*Y_SIZE);
 
 		par{
 			G_image.main();
@@ -90,10 +89,9 @@ behavior susan(i_receiver env_to_susan, i_sender susan_to_env){
 			P_image.main();
 		}
 
-      susan_to_env.read(img_out, X_SIZE*Y_SIZE);
+      put_image_to_susan.receive(&img_out, X_SIZE*Y_SIZE);
       susan_to_env.send(img_out, X_SIZE*Y_SIZE);
 		
-      return 0;
 	}
 
 };

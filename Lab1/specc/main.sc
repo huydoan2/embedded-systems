@@ -5,10 +5,12 @@ import "susan";
 
 behavior Main(){
 	char filename[80];
-	const int SIZE = 7220;
-	unsigned char img[7220];
-	c_queue c_arr_main_susan(3610);
-	susan susan_module(c_arr_main_susan);
+	const unsigned long SIZE = 7220;
+	const unsigned long MID_SIZE = 3610;
+	unsigned char img[SIZE];
+	c_queue env_to_susan(MID_SIZE);
+	c_queue susan_to_env(MID_SIZE);
+	susan susan_module(env_to_susan, susan_to_env);
 
 	int getint(FILE* fd)
 	{
@@ -72,10 +74,10 @@ behavior Main(){
 
 	   fclose(fd);
 
-	   c_arr_main_susan.send(img, SIZE);
+	   env_to_susan.send(img, SIZE);
 	   /* computation in the middle */
-	   c_arr_main_susan.receive(img, SIZE);
-	   if(fd = fopen(argv[2], "wb") == NULL){
+	   susan_to_env.receive(&img, SIZE);
+	   if((fd = fopen(argv[2], "wb")) == NULL){
 	   		printf("Can't open the output file to write\n");
 	   		return 1;
 	   }
@@ -83,5 +85,6 @@ behavior Main(){
 		fwrite(img, SIZE, 1, fd);
 		fclose(fd);
 
+		return 0;
    }
 };
