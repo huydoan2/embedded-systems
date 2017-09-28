@@ -88,8 +88,8 @@ behavior susan(i_receiver env_to_susan, i_sender susan_to_env){
       P_image.main();
 		
 
-      put_image_to_susan.receive(img_out, X_SIZE*Y_SIZE);
-      susan_to_env.send(img_out, X_SIZE*Y_SIZE);
+      put_image_to_susan.receive(img_out, IMG_SIZE);
+      susan_to_env.send(img_out, IMG_SIZE);
 		
 	}
 
