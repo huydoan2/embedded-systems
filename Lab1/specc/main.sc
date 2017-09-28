@@ -84,6 +84,11 @@ behavior Main(){
 	   		return 1;
 	   }
 
+
+   fprintf(fd, "P5\n");
+   fprintf(fd, "%d %d\n", 76, 95);
+   fprintf(fd, "255\n");
+
 		fwrite(img, SIZE, 1, fd);
 		fclose(fd);
 
