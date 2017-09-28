@@ -27,10 +27,10 @@ behavior susan(i_receiver env_to_susan, i_sender susan_to_env){
 
    c_queue c_setup_brightness_lut_to_susan_edges_uchar(BP_SIZE);
 
-   c_queue c_susan_edges_to_susan_thin_uchar(MID_SIZE);
+   c_queue c_susan_edges_to_susan_thin_uchar(IMG_SIZE);
    c_queue c_susan_edges_to_susan_thin_int(R_SIZE);
    
-   c_queue c_susan_thin_to_edge_draw_uchar(MID_SIZE);
+   c_queue c_susan_thin_to_edge_draw_uchar(IMG_SIZE);
 
    c_queue c_edge_draw_to_put_image_uchar(IMG_SIZE);
 
