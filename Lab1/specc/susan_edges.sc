@@ -19,7 +19,10 @@ behavior susan_edges(i_receiver port_img_in, i_receiver port_bp_in, i_sender por
    {
       //Local variables created in susan_edges to be forwarded
       int r[IMG_SIZE] = {0};
-      unsigned char mid[IMG_SIZE] = {100};
+      unsigned char mid[IMG_SIZE];
+      int hj;
+      
+
       unsigned char img[IMG_SIZE];
       unsigned char bp[BP_SIZE];
       
@@ -36,6 +39,9 @@ behavior susan_edges(i_receiver port_img_in, i_receiver port_bp_in, i_sender por
       int img_index = 0; 
       int bp_index = 258;
 
+      for(hj=0; hj<IMG_SIZE; hj++)
+      	mid[hj] = 100;
+    
       //Read in arrays and other variables
       port_img_in.receive(img, IMG_SIZE);
       port_bp_in.receive(bp, BP_SIZE);

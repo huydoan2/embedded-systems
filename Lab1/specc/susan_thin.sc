@@ -14,7 +14,7 @@ behavior susan_thin(i_receiver port_mid_in, i_receiver port_r_in, i_sender port_
    {
       //Local variables created in susan_thin to be forwarded 
       int r[X_SIZE * Y_SIZE] = {0};
-      unsigned char mid[X_SIZE * Y_SIZE] = {100};
+      unsigned char mid[X_SIZE * Y_SIZE] = {0};
 
       //Local variables created in susan_edges NOT to be forwarded
       int   l[9], centre, nlinks, npieces,
