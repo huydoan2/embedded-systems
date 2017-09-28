@@ -2,7 +2,7 @@
 import "c_queue";
 
 #define x_size 76
-#define size 76 * 95
+#define size 7220
 
 behavior edge_draw(i_receiver port_r_img, i_receiver port_r_mid, i_sender port_s_img)
 {
@@ -12,11 +12,11 @@ behavior edge_draw(i_receiver port_r_img, i_receiver port_r_mid, i_sender port_s
 
 	void main()
 	{
-		port_r_img.receive(&img, size);
+		port_r_img.receive(img, size);
 
+		port_r_mid.receive(mid, size);
 		for(j = 0; j < size; j++)
 		{
-			port_r_mid.receive(&mid[j], sizeof(unsigned char));
 			if(mid[j] < 8)
 			{
 				index = j - x_size - 1;

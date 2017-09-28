@@ -4,7 +4,7 @@
 
 #define X_SIZE  76
 #define Y_SIZE  95
-#define IMG_SIZE  3610
+#define IMG_SIZE 7220 
 #define BP_SIZE  516
 #define max_no_edges  2650
 

@@ -3,11 +3,11 @@
 
 #define X_SIZE  76
 #define Y_SIZE  95
-#define IMG_SIZE  3610
+#define IMG_SIZE 7220 
 
 import "c_queue";
 
-behavior susan_thin(i_receiver port_mid_in, i_receiver port_r_in, i_sender port_r_out) 
+behavior susan_thin(i_receiver port_mid_in, i_receiver port_r_in, i_sender port_mid_out) 
 {
 
    void main(void)
@@ -223,7 +223,7 @@ behavior susan_thin(i_receiver port_mid_in, i_receiver port_r_in, i_sender port_
                    }
       
       //Write output variables to be forwarded
-      port_r_out.send(mid, IMG_SIZE);
+      port_mid_out.send(mid, IMG_SIZE);
    
    }
 

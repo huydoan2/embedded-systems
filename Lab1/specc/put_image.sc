@@ -2,7 +2,7 @@
 #include <stdlib.h>
 import "c_queue";
 
-#define size 76 * 95
+#define size 7220 
 
 behavior put_image(i_receiver port_r_img, i_sender port_s_img)
 {
@@ -10,7 +10,7 @@ behavior put_image(i_receiver port_r_img, i_sender port_s_img)
 
 	void main()
 	{
-		port_r_img.receive(&img, size);
+		port_r_img.receive(img, size);
 		port_s_img.send(img, size);
 	}
 };
