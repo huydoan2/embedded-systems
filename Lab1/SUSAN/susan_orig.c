@@ -1058,20 +1058,11 @@ uchar *mp;
 /* }}} */
       }
 
-    //debug mid
-    printf("Mid array is:\n");
 
-    for(int k = 0; k < 76; ++k)
-      for(int j = 0; j < 95; ++j){
-        printf("%d ", mid[k*95+j]);
-        if(j == 95)
-          printf("\n");
-      }
-    printf("\n");
 }
 
 /* }}} */
-/* {{{ susan_edges(in,r,sf,max_no,out) */
+/* {{{ (in,r,sf,max_no,out) */
 
 susan_edges(in,r,mid,bp,max_no,x_size,y_size)
   uchar *in, *bp, *mid;
@@ -1305,6 +1296,17 @@ uchar c,*p,*cp;
         }
       }
     }
+
+        //debug mid
+    printf("Mid array is:\n");
+
+    for(int k = 0; k < 76; ++k)
+      for(int j = 0; j < 95; ++j){
+        printf("%i ", mid[k*95+j]);
+        if(j == 95)
+          printf("\n");
+      }
+    printf("\n");
 }
 
 /* }}} */
