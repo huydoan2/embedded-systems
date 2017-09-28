@@ -13,6 +13,10 @@ SCC	= scc
 SCCOPT	= -vv -w -g -d
 RM	= rm -f
 
+CMP	= diff -s
+GOLDFILE = golden.pgm
+INFILE = input_small.pgm
+OUTFILE = output_edge.pgm
 
 # --- SpecC rules --------------------------------------------------------
 
@@ -43,10 +47,11 @@ clean:
 	-$(RM) *.bak *.BAK
 	-$(RM) *.si *.sir *.cc *.h *.o
 	-$(RM) $(ALL) *.exe
+	-$(RM) main $(OUTFILE)
 
-test:	$(ALL)
-	set -e;					\
-	for file in $(ALL); do ./$$file ; done
+test:	
+	./main $(INFILE) $(OUTFILE) -e
+	 $(CMP) $(OUTFILE) $(GOLDFILE)
 
 
 # --- EOF ----------------------------------------------------------------
