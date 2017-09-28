@@ -1,12 +1,12 @@
 #include <stdio.h>
 
 import "c_queue";
-import "get_image";
-import "setup_brightness_lut";
-import "susan_edges";
-import "susan_thin";
-import "edge_draw";
-import "put_image";
+import "get_image.sc";
+import "setup_brightness_lut.sc";
+import "susan_edges.sc";
+import "susan_thin.sc";
+import "edge_draw.sc";
+import "put_image.sc";
 
 
 behavior susan(i_receiver env_to_susan, i_sender susan_to_env){
@@ -14,10 +14,9 @@ behavior susan(i_receiver env_to_susan, i_sender susan_to_env){
    //Channels for internal communication
    const unsigned long X_SIZE = 76;
    const unsigned long Y_SIZE = 95;
-   const unsigned long IMG_SIZE = 7720; 
-   const unsigned long R_SIZE = 7720;
+   const unsigned long IMG_SIZE = 7220; 
+   const unsigned long R_SIZE = 7220;
    const unsigned long BP_SIZE = 516;
-   const unsigned long MID_SIZE = 7720;
 
    c_queue susan_to_get_image(IMG_SIZE);
    c_queue put_image_to_susan(IMG_SIZE);
@@ -74,20 +73,20 @@ behavior susan(i_receiver env_to_susan, i_sender susan_to_env){
    void main(void)
    {
       
-      unsigned char img_in[X_SIZE * Y_SIZE];
-      unsigned char img_out[X_SIZE * Y_SIZE];
+      unsigned char img_in[IMG_SIZE];
+      unsigned char img_out[IMG_SIZE];
 
-      env_to_susan.receive(img_in, X_SIZE*Y_SIZE);
-      susan_to_get_image.send(img_in, X_SIZE*Y_SIZE);
+      env_to_susan.receive(img_in, IMG_SIZE);
+      susan_to_get_image.send(img_in, IMG_SIZE);
 
-		par{
-			G_image.main();
-			S_B_lut.main();
-			S_edges.main();
-			S_thin.main();
-			E_draw.main();
-			P_image.main();
-		}
+		
+      G_image.main();
+      S_B_lut.main();
+      S_edges.main();
+      S_thin.main();
+      E_draw.main();
+      P_image.main();
+		
 
       put_image_to_susan.receive(img_out, X_SIZE*Y_SIZE);
       susan_to_env.send(img_out, X_SIZE*Y_SIZE);

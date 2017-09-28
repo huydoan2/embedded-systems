@@ -41,7 +41,7 @@ behavior susan_thin(i_receiver port_mid_in, i_receiver port_r_in, i_sender port_
 
                 mp = mid_index + (i - 1)*X_SIZE + j - 1;
 
-                n = (mp < 8) +
+                n = (mid[mp] < 8) +
                    (mid[mp + 1] < 8) +
                    (mid[mp + 2] < 8) +
                    (mid[mp + X_SIZE] < 8) +

@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 import "c_queue";
-import "susan";
+import "susan.sc";
 
 
 behavior Main(){
