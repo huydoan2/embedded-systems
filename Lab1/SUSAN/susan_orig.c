@@ -1057,6 +1057,17 @@ uchar *mp;
 
 /* }}} */
       }
+
+    //debug mid
+    printf("Mid array is:\n");
+
+    for(int k = 0; k < 76; ++k)
+      for(int j = 0; j < 95; ++j){
+        printf("%d ", mid[k*95+j]);
+        if(j == 95)
+          printf("\n");
+      }
+    printf("\n");
 }
 
 /* }}} */
