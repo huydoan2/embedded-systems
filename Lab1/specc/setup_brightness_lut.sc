@@ -6,7 +6,7 @@ import "c_queue";
 behavior setup_brightness_lut(i_sender port_arr_out){
 	int thresh = 20;
 	int form = 6;
-	unsigned char bp[516];
+	unsigned char bp[516] = {0};
 
 	void main(void){
 		int k;
@@ -14,8 +14,6 @@ behavior setup_brightness_lut(i_sender port_arr_out){
 
 		int mid_bp = 258;
  
-                bp[0] = 0x0a8;
-                bp[1] = 0x0e3;
 
 		for (k = -256; k<257; k++) {
 			temp = ((float)k) / ((float)thresh);

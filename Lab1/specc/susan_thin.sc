@@ -24,7 +24,7 @@ behavior susan_thin(i_receiver port_mid_in, i_receiver port_r_in, i_sender port_
          m, n, a, b, x, y, i, j;
        
       // These are converted to indices. Note mp indexes mid.
-      int mp;
+      int mp = 0;
 
       // Additional variables for indices
       int mid_index = 0; 
@@ -174,6 +174,8 @@ behavior susan_thin(i_receiver port_mid_in, i_receiver port_r_in, i_sender port_
                       b21 = mid[(i + 1)*X_SIZE + j] < 8;
                       b10 = mid[(i)*X_SIZE + j - 1] < 8;
                       /* {{{ right angle ends - not currently used */
+					    
+
 
                       /* }}} */
                       if (((b01 + b12 + b21 + b10) == 2) && ((b10 | b12)&(b01 | b21)) &&
