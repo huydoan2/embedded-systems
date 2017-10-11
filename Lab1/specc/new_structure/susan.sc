@@ -14,7 +14,7 @@ behavior susan(i_receive start, i_sender susan_to_env, unsigned char img_in[7220
    //Channels for internal communication
    const unsigned long X_SIZE = 76;
    const unsigned long Y_SIZE = 95;
-   const unsigned long R_SIZE = 7220;
+   const unsigned long R_SIZE = sizeof(int)*7220;
    const unsigned long IMG_SIZE = 7220;
    const unsigned long BP_SIZE = 516;
 

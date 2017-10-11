@@ -276,7 +276,7 @@ behavior susan_edges(i_receiver port_img_in, i_receiver port_bp_in, i_sender por
 
       //Write into the output ports
       port_mid_out.send(mid, IMG_SIZE);
-      port_r_out.send(r, IMG_SIZE);
+      port_r_out.send(r, sizeof(int)*IMG_SIZE);
    
    }
 };

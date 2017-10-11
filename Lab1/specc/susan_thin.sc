@@ -10,10 +10,11 @@ import "c_queue";
 behavior susan_thin(i_receiver port_mid_in, i_receiver port_r_in, i_sender port_mid_out) 
 {
 
+   
    void main(void)
    {
       //Local variables created in susan_thin to be forwarded 
-      int r[X_SIZE * Y_SIZE] = {0};
+      int r[IMG_SIZE] = {0};
       unsigned char mid[X_SIZE * Y_SIZE] = {0};
 
       //Local variables created in susan_edges NOT to be forwarded
@@ -30,8 +31,8 @@ behavior susan_thin(i_receiver port_mid_in, i_receiver port_r_in, i_sender port_
       int mid_index = 0; 
 
       //Read input variables
-      port_mid_in.receive(mid, X_SIZE * Y_SIZE);
-      port_r_in.receive(r, X_SIZE * Y_SIZE);
+      port_r_in.receive(r, sizeof(int)*IMG_SIZE);
+      port_mid_in.receive(mid, IMG_SIZE);
 
        for (i = 4; i < Y_SIZE - 4; i++)
           for (j = 4; j < X_SIZE - 4; j++)
