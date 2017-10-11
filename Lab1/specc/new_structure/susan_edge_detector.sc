@@ -4,9 +4,8 @@ import "c_handshake";
 import "c_queue";
 import "susan";
 
-#define IMG_SIZE 7220
-
-behavior Stimulus(i_send start, int img[IMG_SIZE]) {
+behavior Stimulus(char* file_name, i_send start, unsigned char img[7220]) {
+	const unsigned long IMG_SIZE = 7220;
 
 	int getint(FILE* fd)
 	{
@@ -39,12 +38,12 @@ behavior Stimulus(i_send start, int img[IMG_SIZE]) {
 	   return (i);
 	}
 
-	int get_image(){
+	int read_image(){
 		FILE* fd;
 
 		char header[100];	    
 
-	   if ((fd = fopen(argv[1], "rb")) == NULL)
+	   if ((fd = fopen(file_name, "rb")) == NULL)
 	   		return 1;
 
 	   /* {{{ read header */
@@ -72,20 +71,20 @@ behavior Stimulus(i_send start, int img[IMG_SIZE]) {
 	}
 
 	void main(void) {
-		if(get_image() == 0)
+		if(read_image() == 0)
 			start.send();
 	}
 };
 
-behavior Monitor(i_receiver img_in) {
-
+behavior Monitor(char* file_name, i_receiver img_in) {
+	const unsigned long IMG_SIZE = 7220;
 	unsigned char img[IMG_SIZE];
 
-	int put_image() {
+	int write_image() {
 
 	   FILE* fd;
 
-	   if((fd = fopen(argv[2], "wb")) == NULL){
+	   if((fd = fopen(file_name, "wb")) == NULL){
 			printf("Can't open the output file to write\n");
 			return 1;
 	   }
@@ -100,20 +99,26 @@ behavior Monitor(i_receiver img_in) {
 
 	void main(void) {
 		img_in.receive(img, IMG_SIZE);
-		put_image();
+		write_image();
 	}
 };
 
 behavior Main() {
-	int img[IMG_SIZE];
+	const unsigned long IMG_SIZE = 7220;
+	unsigned char img[IMG_SIZE];
+	char* input_filename;
+	char* output_filename;
 	c_handshake stimulus_to_susan;
 	c_queue susan_to_monitor(IMG_SIZE);
 
-	Stimulus stimulus_module(stimulus_to_susan, img);
+	Stimulus stimulus_module(input_filename,stimulus_to_susan, img);
 	susan susan_module(stimulus_to_susan, susan_to_monitor, img);
-	Monitor monitor_module(susan_to_monitor);
+	Monitor monitor_module(output_filename, susan_to_monitor);
 
-	int main(void) {
+	int main(int argc, char * argv[]) {
+		input_filename = argv[1];
+		output_filename = argv[2];
+ 
 		par {
 			stimulus_module.main();
 			susan_module.main();
