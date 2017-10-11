@@ -1,9 +1,9 @@
 
-import "c_double_handshake";
+import "i_receive";
 
 #define IMG_SIZE 7220
 
-behavior ReadImage(i_receiver start, in unsigned char img[IMG_SIZE], i_sender img_out){
+behavior ReadImage(i_receive start, in unsigned char img[IMG_SIZE], i_sender img_out){
 	void main(void){
 		unsigned char start_sig = 0;
 		do{
