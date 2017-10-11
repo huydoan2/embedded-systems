@@ -1,10 +1,15 @@
 #include <stdio.h>
+#include <sim.sh>
 
 import "c_handshake";
 import "c_queue";
 import "susan";
 
-behavior Stimulus(char* file_name, i_send start, unsigned char img[7220]) {
+#define NUM_IMG  100
+#define WAIT_TIME 1000
+#define WAIT_DELAY 300
+
+behavior Stimulus(char* file_name, i_send start, unsigned char img[7220], unsigned long long start_time) {
 	const unsigned long IMG_SIZE = 7220;
 
 	int getint(FILE* fd)
@@ -71,13 +76,24 @@ behavior Stimulus(char* file_name, i_send start, unsigned char img[7220]) {
 	}
 
 	void main(void) {
-		if(read_image() == 0)
+		int i;
+		if(read_image() == 0) {
+			waitfor(WAIT_TIME);
 			start.send();
+			start_time = now();
+			for(i = 1; i < NUM_IMG; i++)
+			{
+				waitfor(WAIT_DELAY);
+				start.send();
+				start_time = now();
+			}
+		}
 	}
 };
 
-behavior Monitor(char* file_name, i_receiver img_in) {
+behavior Monitor(char* file_name, i_receiver img_in, unsigned long long start_time) {
 	const unsigned long IMG_SIZE = 7220;
+	unsigned long long elapsed_time;
 	unsigned char img[IMG_SIZE];
 
 	int write_image() {
@@ -98,12 +114,18 @@ behavior Monitor(char* file_name, i_receiver img_in) {
 	}
 
 	void main(void) {
-		img_in.receive(img, IMG_SIZE);
-		write_image();
+		int i;
+		for(i = 0; i < NUM_IMG; i++) {
+			img_in.receive(img, IMG_SIZE);
+			elapsed_time = now() - start_time;
+			printf("Now in loop %d, Elapsed_time is %llu\n", i, elapsed_time);
+			write_image();
+		}
 	}
 };
 
 behavior Main() {
+	unsigned long long start_time;
 	const unsigned long IMG_SIZE = 7220;
 	unsigned char img[IMG_SIZE];
 	char* input_filename;
@@ -111,9 +133,9 @@ behavior Main() {
 	c_handshake stimulus_to_susan;
 	c_queue susan_to_monitor(IMG_SIZE);
 
-	Stimulus stimulus_module(input_filename,stimulus_to_susan, img);
+	Stimulus stimulus_module(input_filename,stimulus_to_susan, img, start_time);
 	susan susan_module(stimulus_to_susan, susan_to_monitor, img);
-	Monitor monitor_module(output_filename, susan_to_monitor);
+	Monitor monitor_module(output_filename, susan_to_monitor, start_time);
 
 	int main(int argc, char * argv[]) {
 		input_filename = argv[1];

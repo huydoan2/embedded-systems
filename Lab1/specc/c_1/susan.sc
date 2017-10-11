@@ -9,6 +9,8 @@ import "susan_thin.sc";
 import "edge_draw.sc";
 import "put_image.sc";
 
+#define NUM_IMG  100
+
 behavior susan(i_receive start, i_sender susan_to_env, unsigned char img_in[7220]){
 
    //Channels for internal communication
@@ -72,7 +74,8 @@ behavior susan(i_receive start, i_sender susan_to_env, unsigned char img_in[7220
 	
    void main(void)
    {
-      
+      int i;
+      for(i = 0; i < NUM_IMG; i++) {
       unsigned char img_out[IMG_SIZE];
 
       start.receive();
@@ -89,7 +92,7 @@ behavior susan(i_receive start, i_sender susan_to_env, unsigned char img_in[7220
 
       put_image_to_susan.receive(img_out, IMG_SIZE);
       susan_to_env.send(img_out, IMG_SIZE);
-		
+		}
 	}
 
 };
