@@ -17,12 +17,15 @@ behavior FirstLoop(in int id, in int BLK_SIZE, in unsigned char img[7220], in un
   void main(void){
 
 	  int cp, p, n, i, j, start, end;
-      if(id == 0)
-        start = 3;
-      else
-        start = id*BLK_SIZE;
+    if(id == 0)
+      start = 3;
+    else
+      start = id*BLK_SIZE;
 
-	  end = start + BLK_SIZE;
+    if(id == 4)
+       end = (id + 1) * BLK_SIZE - 3;
+    else
+       end = (id + 1) * BLK_SIZE;
 
       for(i = start; i < end; ++i)
         for (j = 3; j < X_SIZE - 3; j++) {
@@ -87,7 +90,7 @@ behavior FirstLoop(in int id, in int BLK_SIZE, in unsigned char img[7220], in un
 };
 
 
-behavior SecondLoop(in int id, in int BLK_SIZE, in unsigned char img[7220], in unsigned char bp[516], int r[7220], out unsigned char mid[7220]){
+behavior SecondLoop(in int id, in int BLK_SIZE, in unsigned char img[7220], in unsigned char bp[516], in int r[7220], out unsigned char mid[7220]){
 
   void main(void){
   //Local variables created in susan_edges NOT to be forwarded
@@ -103,7 +106,19 @@ behavior SecondLoop(in int id, in int BLK_SIZE, in unsigned char img[7220], in u
   int img_index = 0; 
   int bp_index = 258;
 
-  for (i = 4; i < Y_SIZE - 4; i++) {
+  int start, end;
+
+  if(id == 0)
+    start = 4;
+  else
+    start = id*BLK_SIZE;
+
+  if(id == 4)
+     end = (id + 1) * BLK_SIZE - 4;
+  else
+     end = (id + 1) * BLK_SIZE;
+
+  for (i = start; i < end; i++) {
         for (j = 4; j < X_SIZE - 4; j++) {
            if (r[i*X_SIZE + j] > 0) {
               m = r[i*X_SIZE + j];
@@ -282,25 +297,24 @@ behavior susan_edges(i_receiver port_img_in, i_receiver port_bp_in, i_sender por
     int r[IMG_SIZE] = {0};
     unsigned char mid[IMG_SIZE];
 
-    const int BLK_SIZE = 19;
-    FirstLoop fl0((int)0, BLK_SIZE, img, bp, r);
-    FirstLoop fl1((int)1, BLK_SIZE, img, bp, r);
-    FirstLoop fl2((int)2, BLK_SIZE, img, bp, r);
-    FirstLoop fl3((int)3, BLK_SIZE, img, bp, r);
-    FirstLoop fl4((int)4, BLK_SIZE, img, bp, r);
+    int BLK_SIZE = 19;
+    FirstLoop fl0(0, BLK_SIZE, img, bp, r);
+    FirstLoop fl1(1, BLK_SIZE, img, bp, r);
+    FirstLoop fl2(2, BLK_SIZE, img, bp, r);
+    FirstLoop fl3(3, BLK_SIZE, img, bp, r);
+    FirstLoop fl4(4, BLK_SIZE, img, bp, r);
 
-    SecondLoop sl0((int)0, BLK_SIZE, img, bp, r, mid);
-    SecondLoop sl1((int)1, BLK_SIZE, img, bp, r, mid);
-    SecondLoop sl2((int)2, BLK_SIZE, img, bp, r, mid);
-    SecondLoop sl3((int)3, BLK_SIZE, img, bp, r, mid);
+    SecondLoop sl0(0, BLK_SIZE, img, bp, r, mid);
+    SecondLoop sl1(1, BLK_SIZE, img, bp, r, mid);
+    SecondLoop sl2(2, BLK_SIZE, img, bp, r, mid);
+    SecondLoop sl3(3, BLK_SIZE, img, bp, r, mid);
+    SecondLoop sl4(4, BLK_SIZE, img, bp, r, mid);
+
    void main(void)
    {
       //Local variables created in susan_edges to be forwarded
-      int hj;
-      
+      unsigned int hj;
 
-
-      
       //Local variables created in susan_edges NOT to be forwarded
       //float z;
       //int   do_symmetry, i, j, m, n, a, b, x, y, w;
@@ -334,6 +348,7 @@ behavior susan_edges(i_receiver port_img_in, i_receiver port_bp_in, i_sender por
           sl1.main();
           sl2.main();
           sl3.main();
+          sl4.main();
        }       
 
       //Write into the output ports
