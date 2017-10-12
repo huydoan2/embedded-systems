@@ -90,7 +90,7 @@ behavior FirstLoop(in int id, in int BLK_SIZE, in unsigned char img[7220], in un
 };
 
 
-behavior SecondLoop(in int id, in int BLK_SIZE, in unsigned char img[7220], in unsigned char bp[516], in int r[7220], out unsigned char mid[7220]){
+behavior SecondLoop(in int id, in int BLK_SIZE, in unsigned char img[7220], in unsigned char bp[516], int r[7220], out unsigned char mid[7220]){
 
   void main(void){
   //Local variables created in susan_edges NOT to be forwarded
