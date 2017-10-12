@@ -1,16 +1,15 @@
 #include <stdio.h>
 
-import "i_sender";
-import "i_receiver";
+import "c_imtoken_queue";
 
-behavior WriteImage(i_receiver img_in, i_sender img_out){
+behavior WriteImage(i_imtoken_myreceiver img_in, i_imtoken_mysender img_out){
 	const int IMG_SIZE = 7220;
 	unsigned char img[IMG_SIZE];
 
 	void main(void){
 		while(true){
-			img_in.receive(img, IMG_SIZE);
-			img_out.send(img, IMG_SIZE);
+			img_in.receive(img);
+			img_out.send(img);
 		}
 	}
 

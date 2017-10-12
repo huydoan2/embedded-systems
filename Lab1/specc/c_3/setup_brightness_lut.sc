@@ -2,8 +2,9 @@
 #define X_SIZE 76
 #define Y_SIZE 95
 
-import "c_queue";
-behavior setup_brightness_lut(i_sender port_arr_out){
+import "c_bptoken_queue";
+
+behavior setup_brightness_lut(i_bptoken_mysender port_arr_out){
 	int thresh = 20;
 	int form = 6;
 	unsigned char bp[516] = {0};
@@ -26,7 +27,7 @@ behavior setup_brightness_lut(i_sender port_arr_out){
 		}
 
 		/* Send bp to susan_edges */
-		port_arr_out.send(bp, 516);
+		port_arr_out.send(bp);
 	
 	}
 };

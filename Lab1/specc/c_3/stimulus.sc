@@ -2,16 +2,17 @@
 #include <sim.sh>
 
 import "i_send";
-import "i_sender";
+import "c_tmtoken_queue";
 
 #define IMG_SIZE 7220
 #define NUM_IMG  100
 #define WAIT_TIME 1000
 
 
-behavior Stimulus(in char* file_name, i_send start, i_sender time, inout unsigned char img[IMG_SIZE]) {	
+behavior Stimulus(in char* file_name, i_send start, i_tmtoken_sender time, inout unsigned char img[IMG_SIZE]) {	
 	unsigned char start_sig;
 	unsigned long long start_time;
+	bit[8*sizeof(unsigned long long int)] temp;
 
 	int getint(FILE* fd)
 	{
@@ -80,7 +81,8 @@ behavior Stimulus(in char* file_name, i_send start, i_sender time, inout unsigne
 			for(i = 0; i < NUM_IMG; ++i){
 				start.send();
 				start_time = now();
-				time.send(&start_time, sizeof(start_time));
+				temp = start_time; 
+				time.send(temp);
 				waitfor(WAIT_TIME);
 			}
 		}
