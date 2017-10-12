@@ -62,8 +62,7 @@ behavior susan(i_imtoken_myreceiver read_image_to_susan, i_imtoken_mysender susa
    {
       
       while(true)
-      {
-      
+      {   
          par{		
            	S_B_lut.main();
       		S_edges.main();
@@ -74,3 +73,15 @@ behavior susan(i_imtoken_myreceiver read_image_to_susan, i_imtoken_mysender susa
    }
 
 };
+
+behavior susan_fsm(i_imtoken_myreceiver read_image_to_susan, i_imtoken_mysender susan_to_write_image)
+{
+	susan S0(read_image_to_susan, susan_to_write_image);
+
+	void main(void)
+	{
+		fsm {S0: goto S0;}
+	}	
+};
+
+

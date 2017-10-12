@@ -27,7 +27,7 @@ behavior Design(i_receive start, in unsigned char img_in[7220], i_imtoken_mysend
 			   read_image_to_susan
                            );
    
-   susan      s_image	   (
+   susan_fsm s_image	   (
 			   read_image_to_susan,
 			   susan_to_write_image
                            );
