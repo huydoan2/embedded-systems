@@ -1,22 +1,23 @@
 #include <stdio.h>
 #include<sim.sh>
 
-import "i_receiver";
-#define NUM_IMG  100
+import "c_imtoken_queue";
+import "c_tmtoken_queue";
 
-behavior Monitor(in char * file_name, i_receiver stimulus_time, i_receiver img_in){
+behavior Monitor(in char * file_name, i_tmtoken_receiver stimulus_time, i_imtoken_myreceiver img_in){
 	const int IMG_SIZE = 7220;
 	unsigned long long start_time = 0;
 	unsigned long long elapsed_time = 0;
 	unsigned char img[IMG_SIZE];
+	bit[8*sizeof(unsigned long long int)] temp;
 	FILE* fd;
 
 
 	void main(void){
-		int i;
-		for (i = 0; i < NUM_IMG; i++) {
-			stimulus_time.receive(&start_time, sizeof(start_time));
-			img_in.receive(img, IMG_SIZE);
+		while(true){
+			stimulus_time.receive(&temp);
+			start_time = temp;
+			img_in.receive(img);
 
 			elapsed_time = now() - start_time;
 

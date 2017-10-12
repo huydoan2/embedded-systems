@@ -5,9 +5,10 @@
 #define Y_SIZE  95
 #define IMG_SIZE 7220 
 
-import "c_queue";
+import "c_imtoken_queue";
+import "c_rtoken_queue";
 
-behavior susan_thin(i_receiver port_img_in, i_receiver port_mid_in, i_receiver port_r_in, i_sender port_img_out, i_sender port_mid_out) 
+behavior susan_thin(i_imtoken_myreceiver port_img_in, i_imtoken_myreceiver port_mid_in, i_rtoken_myreceiver port_r_in, i_imtoken_mysender port_img_out, i_imtoken_mysender port_mid_out) 
 {
 
    
@@ -32,9 +33,9 @@ behavior susan_thin(i_receiver port_img_in, i_receiver port_mid_in, i_receiver p
       int mid_index = 0; 
 
       //Read input variables
-      port_img_in.receive(img, IMG_SIZE);
-      port_mid_in.receive(mid, IMG_SIZE);
-      port_r_in.receive(r, sizeof(int)*IMG_SIZE);
+      port_img_in.receive(img);
+      port_mid_in.receive(mid);
+      port_r_in.receive(r);
 
        for (i = 4; i < Y_SIZE - 4; i++)
           for (j = 4; j < X_SIZE - 4; j++)
@@ -228,8 +229,8 @@ behavior susan_thin(i_receiver port_img_in, i_receiver port_mid_in, i_receiver p
                    }
       
       //Write output variables to be forwarded
-      port_img_out.send(img, IMG_SIZE);
-      port_mid_out.send(mid, IMG_SIZE);
+      port_img_out.send(img);
+      port_mid_out.send(mid);
    
    }
 

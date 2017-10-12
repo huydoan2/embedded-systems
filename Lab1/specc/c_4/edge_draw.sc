@@ -1,10 +1,11 @@
 #include <stdio.h>
-import "c_queue";
+
+import "c_imtoken_queue";
 
 #define x_size 76
 #define size 7220
 
-behavior edge_draw(i_receiver port_r_img, i_receiver port_r_mid, i_sender port_s_img)
+behavior edge_draw(i_imtoken_myreceiver port_r_img, i_imtoken_myreceiver port_r_mid, i_imtoken_mysender port_s_img)
 {
 	int i, index, midi;
 	unsigned char img[size];
@@ -13,8 +14,8 @@ behavior edge_draw(i_receiver port_r_img, i_receiver port_r_mid, i_sender port_s
 	void main()
 	{
 		
-		port_r_img.receive(img, size);
-		port_r_mid.receive(mid, size);
+		port_r_img.receive(img);
+		port_r_mid.receive(mid);
 
 		midi = 0;
 
@@ -38,6 +39,6 @@ behavior edge_draw(i_receiver port_r_img, i_receiver port_r_mid, i_sender port_s
     			midi++;
   		}
 
-		port_s_img.send(img, size);
+		port_s_img.send(img);
 	}
 };

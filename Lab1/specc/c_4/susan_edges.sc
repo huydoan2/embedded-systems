@@ -6,7 +6,9 @@
 #define Y_SIZE  95
 #define max_no_edges  2650
 
-import "c_queue";
+import "c_bptoken_queue.sc";
+import "c_imtoken_queue.sc";
+import "c_rtoken_queue.sc";
 
 
 behavior FirstLoop(in int id, in int BLK_SIZE, in unsigned char img[7220], in unsigned char bp[516], out int r[7220]){
@@ -286,7 +288,7 @@ behavior SecondLoop(in int id, in int BLK_SIZE, in unsigned char img[7220], in u
   }
 };
 
-behavior susan_edges(i_receiver port_img_in, i_receiver port_bp_in, i_sender port_img_out, i_sender port_mid_out, i_sender port_r_out) 
+behavior susan_edges(i_imtoken_myreceiver port_img_in, i_bptoken_myreceiver port_bp_in, i_imtoken_mysender port_img_out, i_imtoken_mysender port_mid_out, i_rtoken_mysender port_r_out) 
 {
 
     const unsigned long IMG_SIZE = 7220;
@@ -332,8 +334,8 @@ behavior susan_edges(i_receiver port_img_in, i_receiver port_bp_in, i_sender por
       	mid[hj] = 100;
     
       //Read in arrays and other variables
-      port_bp_in.receive(bp, BP_SIZE);
-      port_img_in.receive(img, IMG_SIZE);
+      port_bp_in.receive(bp);
+      port_img_in.receive(img);
 
        par{
           fl0.main();
@@ -352,9 +354,9 @@ behavior susan_edges(i_receiver port_img_in, i_receiver port_bp_in, i_sender por
        }       
 
       //Write into the output ports
-      port_img_out.send(img, IMG_SIZE);
-      port_mid_out.send(mid, IMG_SIZE);
-      port_r_out.send(r, sizeof(int)*IMG_SIZE);
+      port_img_out.send(img);
+      port_mid_out.send(mid);
+      port_r_out.send(r);
    
    }
 };

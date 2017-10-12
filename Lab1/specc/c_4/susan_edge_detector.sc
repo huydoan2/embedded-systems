@@ -1,7 +1,9 @@
 #include <stdio.h>
 
 import "c_handshake";
-import "c_queue";
+import "c_tmtoken_queue";
+import "c_imtoken_queue";
+
 import "design.sc";
 import "stimulus.sc";
 import "monitor.sc";
@@ -9,13 +11,14 @@ import "monitor.sc";
 
 behavior Main() {
 	const unsigned long IMG_SIZE = 7220;
-	const unsigned long TIME_SIZE = 2*sizeof(unsigned long long);
+	const unsigned long TIME_SIZE = 2;
+	const unsigned long QUEUE_SIZE = 1;
 	unsigned char img[IMG_SIZE];
 	char* input_filename;
 	char* output_filename;
 	c_handshake stimulus_to_design_start;
-	c_queue stimulus_to_monitor(TIME_SIZE);
-	c_queue design_to_monitor(IMG_SIZE);
+	c_tmtoken_queue stimulus_to_monitor(TIME_SIZE);
+	c_imtoken_myqueue design_to_monitor(QUEUE_SIZE);
 
 	Stimulus stimulus_module(input_filename, stimulus_to_design_start, stimulus_to_monitor, img);
 	Design design_module(stimulus_to_design_start, img, design_to_monitor);
