@@ -1,6 +1,8 @@
 #include "susan.sh"
 
-import "susan";
+import "detect_edges";
+import "susan_thin";
+import "edge_draw";
 import "read_image";
 import "write_image";
 import "c_uchar7220_queue";
