@@ -8,7 +8,7 @@ import "write_image";
 import "c_uchar7220_queue";
 
 behavior PE1(i_uchar7220_receiver in_image,
-            i_uint7220_sender r,
+            i_int7220_sender r,
             i_uchar7220_sender mid,
             i_uchar7220_sender image_edge_draw){
 
@@ -22,10 +22,10 @@ behavior PE1(i_uchar7220_receiver in_image,
     }
 };
 
-behavior PE2(i_uint7220_receiver r,
+behavior PE2(i_int7220_receiver r,
             i_uchar7220_receiver mid,
-            i_uchar7220_sender image_edge_draw,
-            i_uchar7220_sender out_image,){
+            i_uchar7220_receiver image_edge_draw,
+            i_uchar7220_sender out_image){
 
     c_uchar7220_queue mid_edge_draw(1ul);
 
@@ -38,11 +38,11 @@ behavior PE2(i_uint7220_receiver r,
             draw.main();
         }
     }
-}
+};
 
 behavior INPUT(i_receive start,
                 in uchar image_buffer[IMAGE_SIZE],
-                i_sender in_image){
+                i_uchar7220_sender in_image){
 
     ReadImage read_image(start, image_buffer, in_image);
 
@@ -61,7 +61,7 @@ behavior OUTPUT(i_uchar7220_receiver out_image,
     }
 };
 
-behavior DesignII(i_receive start, in uchar image_buffer[IMAGE_SIZE], i_sender out_image_susan){
+behavior Design(i_receive start, in uchar image_buffer[IMAGE_SIZE], i_sender out_image_susan){
     c_uchar7220_queue in_image(1ul);
     c_uchar7220_queue out_image(1ul);
 
@@ -70,7 +70,7 @@ behavior DesignII(i_receive start, in uchar image_buffer[IMAGE_SIZE], i_sender o
     c_uchar7220_queue image_edge_draw(1ul);
 
     PE1 pe1(in_image, r, mid, image_edge_draw);
-    PE1 pe2(r, mid, image_edge_draw, out_image);
+    PE2 pe2(r, mid, image_edge_draw, out_image);
 
     INPUT input(start, image_buffer, in_image);
     OUTPUT output(out_image, out_image_susan);
