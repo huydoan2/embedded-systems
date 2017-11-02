@@ -79,6 +79,7 @@ behavior Design(i_receive start, in uchar image_buffer[IMAGE_SIZE], i_sender out
         par{
             input.main();
             pe1.main();
+			pe2.main();
             output.main();
         }
     }
