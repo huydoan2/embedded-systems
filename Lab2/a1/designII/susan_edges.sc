@@ -5,8 +5,7 @@ import "c_int7220_queue";
 
 behavior SusanEdgesThread_PartA(uchar image_buffer[IMAGE_SIZE],  int r[IMAGE_SIZE], uchar bp[516],  in int thID)
 {
-    
-         
+
     void main(void) {
 
         int max_no;
@@ -15,7 +14,7 @@ behavior SusanEdgesThread_PartA(uchar image_buffer[IMAGE_SIZE],  int r[IMAGE_SIZ
         
         max_no = MAX_NO_EDGES;
         //for (i=3;i<Y_SIZE-3;i++)
-        for (i=3+(Y_SIZE-3-3)/PROCESSORS*thID; i<3+(Y_SIZE-3-3)/PROCESSORS*(thID+1) + (thID+1==PROCESSORS && (Y_SIZE-3-3)%PROCESSORS!=0 ? (Y_SIZE-3-3)%PROCESSORS : 0); i++)
+        for (i=3+(Y_SIZE-3-3)/PROCESSORS*thID; i<3+(Y_SIZE-3-3)/PROCESSORS*(thID+1) + (thID+1==PROCESSORS && (Y_SIZE-3-3)%PROCESSORS!=0 ? (Y_SIZE-3-3)%PROCESSORS : 0); i++) {
             for (j=3;j<X_SIZE-3;j++)
             {
                 n=100;
@@ -74,9 +73,13 @@ behavior SusanEdgesThread_PartA(uchar image_buffer[IMAGE_SIZE],  int r[IMAGE_SIZ
 
                 if (n<=max_no)
                     r[i*X_SIZE+j] = max_no - n;
+	    
             }
 
-                               
+	    //-----Delay annotation-----
+            waitfor(19000000);
+	    //--------------------------
+        }                       
     }           
     
 };  
@@ -256,6 +259,10 @@ behavior SusanEdgesThread_PartB(uchar image_buffer[IMAGE_SIZE],  int r[IMAGE_SIZ
                                 mid[i*X_SIZE+j] = 2;	
                         }
                     }
+	    
+		    //-----Delay annotation-----
+        	    waitfor(20000000);  
+	            //--------------------------
                 }                            
     }           
     
@@ -293,7 +300,6 @@ behavior SusanEdges_PartA (uchar image_buffer[IMAGE_SIZE],  int r[IMAGE_SIZE], u
             susan_edges_a_thread_0;
             susan_edges_a_thread_1;
         }
-        waitfor(1900000);
     }
 };
 
@@ -307,7 +313,6 @@ behavior SusanEdges_PartB(uchar image_buffer[IMAGE_SIZE],  int r[IMAGE_SIZE], uc
             susan_edges_b_thread_0;
             susan_edges_b_thread_1;
         }
-        waitfor(2000000);  
     }
 };
 
