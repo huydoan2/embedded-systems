@@ -9,7 +9,7 @@ import "i_sender";
 #define WAIT_TIME 1000
 
 
-behavior Stimulus(in char file_name[80], i_send start, i_sender time, inout unsigned char img[IMG_SIZE]){	
+behavior Stimulus(in char* file_name, i_send start, i_sender time, inout unsigned char img[IMG_SIZE]) {	
 	unsigned char start_sig;
 	unsigned long long start_time;
 

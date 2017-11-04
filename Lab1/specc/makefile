@@ -7,7 +7,7 @@
 
 # --- macros -------------------------------------------------------------
 
-ALL	= main
+ALL	= susan_edge_detector
 
 SCC	= scc
 SCCOPT	= -vv -w -g -d
@@ -50,7 +50,7 @@ clean:
 	-$(RM) main $(OUTFILE)
 
 test:	
-	./main $(INFILE) $(OUTFILE) -e
+	./susan_edge_detector $(INFILE) $(OUTFILE) -e
 	 $(CMP) $(OUTFILE) $(GOLDFILE)
 
 

@@ -1,5 +1,6 @@
 
 import "i_receive";
+import "i_sender";
 
 #define IMG_SIZE 7220
 
@@ -7,9 +8,9 @@ behavior ReadImage(i_receive start, in unsigned char img[IMG_SIZE], i_sender img
 	void main(void){
 		unsigned char start_sig = 0;
 		do{
-			start.receive(&start_sig, sizeof(start_sig));
+			start.receive();
 			img_out.send(img, IMG_SIZE);	
 		}
-		while(start_sig);
+		while(true);
 	}
 };

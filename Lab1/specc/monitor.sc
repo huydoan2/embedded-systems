@@ -3,7 +3,7 @@
 
 import "i_receiver";
 
-behavior Monitor(in char file_name[80], i_receiver stimulus_time, i_receiver img_in){
+behavior Monitor(in char * file_name, i_receiver stimulus_time, i_receiver img_in){
 	const int IMG_SIZE = 7220;
 	unsigned long long start_time = 0;
 	unsigned long long elapsed_time = 0;
@@ -18,7 +18,7 @@ behavior Monitor(in char file_name[80], i_receiver stimulus_time, i_receiver img
 
 			elapsed_time = now() - start_time;
 
-			printf("Delay time: %ull\n", elapsed_time);
+			printf("Delay time: %llu\n", elapsed_time);
 
 			
 			if((fd = fopen(file_name, "wb")) == NULL){

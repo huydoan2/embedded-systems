@@ -22,7 +22,7 @@ behavior susan(i_receiver read_image_to_susan, i_sender susan_to_write_image){
    c_queue c_susan_to_susan_edges_uchar(IMG_SIZE);
 
    c_queue c_susan_edges_to_susan_thin_uchar(IMG_SIZE);
-   c_queue c_susan_edges_to_susan_thin_int(IMG_SIZE);
+   c_queue c_susan_edges_to_susan_thin_int(R_SIZE);
    
    c_queue c_susan_thin_to_edge_draw_uchar(IMG_SIZE);
 

@@ -9,11 +9,9 @@ import "read_image.sc";
 import "write_image.sc";
 
 
-behavior design(i_send start, i_receiver env_to_design, i_sender design_to_env){
+behavior Design(i_receive start, in unsigned char img_in[7220], i_sender design_to_env){
 
    const unsigned long IMG_SIZE = 7220; 
-
-   unsigned char img_in[IMG_SIZE] = {0};
 
    c_queue read_image_to_susan(IMG_SIZE);
    c_queue susan_to_write_image(IMG_SIZE);
@@ -23,7 +21,7 @@ behavior design(i_send start, i_receiver env_to_design, i_sender design_to_env){
    //Definition of individual behaviors
 
    ReadImage r_image      (
-            start,
+            		   start,
 			   img_in,
 			   read_image_to_susan
                            );
