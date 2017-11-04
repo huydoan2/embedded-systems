@@ -15,9 +15,9 @@ behavior SusanThinThread(int r[IMAGE_SIZE], uchar mid[IMAGE_SIZE], in int thID)
         uchar *mp;
 
 
-	    for (i=4+(Y_SIZE-4-4)/PROCESSORS*thID; i<4+(Y_SIZE-4-4)/PROCESSORS*(thID+1) + (thID+1==PROCESSORS && (Y_SIZE-4-4)%PROCESSORS!=0 ? (Y_SIZE-4-4)%PROCESSORS : 0); i++)         		          
+	for (i=4+(Y_SIZE-4-4)/PROCESSORS*thID; i<4+(Y_SIZE-4-4)/PROCESSORS*(thID+1) + (thID+1==PROCESSORS && (Y_SIZE-4-4)%PROCESSORS!=0 ? (Y_SIZE-4-4)%PROCESSORS : 0); i++) {         		          
         //for (i=4;i<Y_SIZE-4;i++)
-            for (j=4;j<X_SIZE-4;j++)
+            for (j=4;j<X_SIZE-4;j++) {
                 if (mid[i*X_SIZE+j]<8)
                 {
                     centre = r[i*X_SIZE+j];
@@ -197,7 +197,14 @@ behavior SusanThinThread(int r[IMAGE_SIZE], uchar mid[IMAGE_SIZE], in int thID)
                             }
                         }
                     }
-                } 
+		    
+                }
+ 		
+	    }
+	//-----Delay annotation-----
+       	waitfor(6400000);                   
+	//--------------------------
+	}
     }                
 };
 
@@ -228,7 +235,6 @@ behavior SusanThin(int r[IMAGE_SIZE], uchar mid[IMAGE_SIZE])
             susan_thin_thread_0;
             susan_thin_thread_1;
         }
-        waitfor(6400000);                   
     }
 
 };
