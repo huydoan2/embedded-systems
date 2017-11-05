@@ -6,16 +6,21 @@ import "edge_draw";
 import "read_image";
 import "write_image";
 import "c_uchar7220_queue";
+import "i_os_api";
+import "speccos";
+
 
 behavior PE1(i_uchar7220_receiver in_image,
             i_int7220_sender r,
             i_uchar7220_sender mid,
             i_uchar7220_sender image_edge_draw){
 
-    Edges edges(in_image, r, mid, image_edge_draw);
-
+    OS OS_i;
+    Edges edges(in_image, r, mid, image_edge_draw, OS_i);
+    
 
     void main(void){
+	OS_i.init();
         par{
             edges.main();
         }
