@@ -231,10 +231,8 @@ behavior SusanThin(int r[IMAGE_SIZE], uchar mid[IMAGE_SIZE])
     SusanThinThread susan_thin_thread_1(r, mid, 1);
     
     void main(void) {        
-       par {
             susan_thin_thread_0;
             susan_thin_thread_1;
-        }
     }
 
 };
@@ -250,11 +248,11 @@ behavior Thin(i_int7220_receiver in_r, i_uchar7220_receiver in_mid, i_uchar7220_
     SusanThin susan_thin(r, mid);
     
     void main(void) {
-        fsm {
-            susan_thin_read_input: goto susan_thin;
-            susan_thin: { goto susan_thin_write_output;}
-            susan_thin_write_output: goto susan_thin_read_input;
-        }
+       // fsm {
+            susan_thin_read_input.main(); //: goto susan_thin;
+            susan_thin.main(); //: { goto susan_thin_write_output;}
+            susan_thin_write_output.main(); //: goto susan_thin_read_input;
+      //  }
     }
     
 };

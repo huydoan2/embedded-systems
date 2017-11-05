@@ -20,12 +20,12 @@ behavior PE1(i_uchar7220_receiver in_image,
     Draw draw(image_edge_draw, mid_edge_draw, out_image);
 
     void main(void){
-        par{
-            edges.main();
-            thin.main();
-            draw.main();
-        }
-    }
+	fsm {
+		 edges: goto thin;
+            thin: goto draw;
+            draw: goto edges;
+	 }
+	}
 };
 
 behavior INPUT(i_receive start,
@@ -58,12 +58,11 @@ behavior Design(i_receive start, in uchar image_buffer[IMAGE_SIZE], i_sender out
     OUTPUT output(out_image, out_image_susan);
 
     void main(void){
-        par{
-            input.main();
+      par{      input.main();
             pe1.main();
             output.main();
-        }
     }
+}
 };
 
 // behavior Design(i_receive start, in uchar image_buffer[IMAGE_SIZE], i_sender out_image_susan)
