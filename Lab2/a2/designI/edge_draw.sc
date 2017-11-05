@@ -26,6 +26,10 @@ behavior EdgeDrawThread_PartA(uchar image_buffer[7220], uchar mid[7220], in int 
                     *inp++=255; *inp++=255; *inp=255;
                 }
                 midp++;
+		
+		//-----Delay annotation-----
+        	waitfor(12000000);    
+	      	//--------------------------
             }
         }
      }   
@@ -52,6 +56,10 @@ behavior EdgeDrawThread_PartB(uchar image_buffer[7220], uchar mid[7220], in int 
             if (*midp<8) 
                 *(image_buffer+ (midp - mid)) = 0;
             midp++;
+
+	    //-----Delay annotation-----
+            waitfor(12000000);    
+	    //--------------------------
         }
     }
     
@@ -79,9 +87,10 @@ behavior EdgeDraw_PartA(uchar image_buffer[7220], uchar mid[7220])
     EdgeDrawThread_PartA edge_draw_a_thread_1(image_buffer, mid, 1);
     
     void main(void) {
-        edge_draw_a_thread_0;
-        edge_draw_a_thread_1;
-        waitfor(12000000);    
+      par {
+            edge_draw_a_thread_0;
+            edge_draw_a_thread_1;
+        }
     }     
 };
 
@@ -92,9 +101,10 @@ behavior EdgeDraw_PartB(uchar image_buffer[7220], uchar mid[7220])
     EdgeDrawThread_PartB edge_draw_b_thread_1(image_buffer, mid, 1);
     
     void main(void) {
-        edge_draw_b_thread_0;
-        edge_draw_b_thread_1;
-        waitfor(12000000);    
+      par {
+            edge_draw_b_thread_0;
+            edge_draw_b_thread_1;
+        }
     }     
 };
 
