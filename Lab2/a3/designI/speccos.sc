@@ -27,6 +27,7 @@ channel os_queue implements i_queue{
 		if(curr!=tail){
 			ret = queue[curr];
 			curr = (++curr) % capacity;
+			//printf("Popped %d\n", ret);	
 		}
 
 		return ret;
@@ -36,6 +37,7 @@ channel os_queue implements i_queue{
 		if (curr!=((tail+1)%capacity)){
 			queue[tail] = e;
 			tail = (tail + 1)%capacity;
+			//printf("Pushed %d\n", e);	
 			return 0;
 		}
 
@@ -44,7 +46,8 @@ channel os_queue implements i_queue{
 	
 	int top()
 	{
-		return queue[curr];
+		if(curr!=tail) return queue[curr];
+		else return -1;
 	}
 
 	void init(){
@@ -59,6 +62,7 @@ channel OS implements OSAPI{
 	int current;	// current task
 	os_queue rdyq;
 	event e0,e1,e2,e3,e4,e5,e6,e7,e8,e9;
+	int id_pool;
 
 	void event_wait(int id)
 	{
@@ -109,13 +113,14 @@ channel OS implements OSAPI{
 		current = schedule();
 		event_notify(current);
 	}
-
-	Task task_create(char *name, int priority, int id)
+	
+	Task task_create(char *name, int priority)
 	{
 		Task t;
 		t.name  = name;
 		t.priority = priority;
-		t.id = id;
+		id_pool++;
+		t.id = id_pool;
 		return t;
 	}
 	
@@ -133,6 +138,7 @@ channel OS implements OSAPI{
 			if(rdyq.top()==t.id) dispatch();
 		}
 		event_wait(t.id);
+
 	}
 
 	void yield() {
@@ -156,7 +162,7 @@ channel OS implements OSAPI{
 
 	void time_wait(unsigned long long t) {
 		waitfor(t);
-		yield();
+		//yield();
 	}
 
 	int par_start()
@@ -187,5 +193,6 @@ channel OS implements OSAPI{
 	void init(){
 		rdyq.init();
 		current = -1;
+		id_pool = -1;
 	}
 };
