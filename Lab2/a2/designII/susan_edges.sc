@@ -15,7 +15,7 @@ behavior SusanEdgesThread_PartA(uchar image_buffer[IMAGE_SIZE],  int r[IMAGE_SIZ
 	
 	//-------OS---------
 	Task sb;
-	sb = OS_i.task_create("sb", 1, 2+thID);
+	sb = OS_i.task_create("sb", 1);
 	OS_i.task_start(sb);
 	//-----------------      
         
@@ -106,7 +106,7 @@ behavior SusanEdgesThread_PartB(uchar image_buffer[IMAGE_SIZE],  int r[IMAGE_SIZ
 	
 	//-------OS---------
 	Task sb;
-	sb = OS_i.task_create("sb", 1, 2+thID);
+	sb = OS_i.task_create("sb", 1);
 	OS_i.task_start(sb);
 	//-----------------      
         
@@ -316,7 +316,7 @@ behavior SusanEdges_PartA (uchar image_buffer[IMAGE_SIZE],  int r[IMAGE_SIZE], u
 	//-------OS---------
 	Task br;
 	int t;
-	br = OS_i.task_create("br", 1, 1);
+	br = OS_i.task_create("br", 1);
 	OS_i.task_start(br);
 	//-----------------      
         
@@ -340,7 +340,7 @@ behavior SusanEdges_PartB(uchar image_buffer[IMAGE_SIZE],  int r[IMAGE_SIZE], uc
 	//-------OS---------
 	Task br;
 	int t;
-	br = OS_i.task_create("br", 1, 1);
+	br = OS_i.task_create("br", 1);
 	OS_i.task_start(br);
 	//-----------------      
 	

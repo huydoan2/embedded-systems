@@ -12,7 +12,7 @@ typedef struct Task
 interface OSAPI{
 	
 	void init();
-	Task task_create(char *name, int priority, int id);
+	Task task_create(char *name, int priority);
 	void task_start(Task t);
 	void task_terminate();
 	//void task_sleep();

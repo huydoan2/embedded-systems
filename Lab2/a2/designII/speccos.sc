@@ -59,6 +59,7 @@ channel OS implements OSAPI{
 	int current;	// current task
 	os_queue rdyq;
 	event e0,e1,e2,e3,e4,e5,e6,e7,e8,e9;
+	int id_pool;
 
 	void event_wait(int id)
 	{
@@ -109,16 +110,17 @@ channel OS implements OSAPI{
 		current = schedule();
 		event_notify(current);
 	}
-
-	Task task_create(char *name, int priority, int id)
+	
+	Task task_create(char *name, int priority)
 	{
 		Task t;
 		t.name  = name;
 		t.priority = priority;
-		t.id = id;
+		id_pool++;
+		t.id = id_pool;
 		return t;
 	}
-	
+
 	void task_start(Task t) {
 		int error;
 		error = rdyq.push(t.id); 
@@ -187,5 +189,6 @@ channel OS implements OSAPI{
 	void init(){
 		rdyq.init();
 		current = -1;
+		id_pool = -1;
 	}
 };

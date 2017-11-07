@@ -11,7 +11,7 @@ behavior SetupBrightnessLutThread(uchar bp[516], in int thID, OSAPI OS_i)
 	
 	//-------OS---------
 	Task sb;
-	sb = OS_i.task_create("sb", 1, 2+thID);
+	sb = OS_i.task_create("sb", 1);
 	OS_i.task_start(sb);
 	//-----------------      
   
@@ -49,7 +49,7 @@ behavior SetupBrightnessLut(uchar bp[516], OSAPI OS_i)
 	//-------OS---------
 	Task br;
 	int t;
-	br = OS_i.task_create("br", 1, 1);
+	br = OS_i.task_create("br", 1);
 	OS_i.task_start(br);
 	//-----------------      
 
