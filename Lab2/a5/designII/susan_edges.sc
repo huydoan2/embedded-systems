@@ -14,11 +14,9 @@ behavior SusanEdgesThread_PartA(uchar image_buffer[IMAGE_SIZE],  int r[IMAGE_SIZ
         uchar *p,*cp;
 	
 	//-------OS---------
-	Task se;
-	unsigned long long time;
-	se = OS_i.task_create("se", 1);
-	OS_i.task_start(se);
-	time = 0;
+	Task sb;
+	sb = OS_i.task_create("sb", 1, 2+thID);
+	OS_i.task_start(sb);
 	//-----------------      
         
         max_no = MAX_NO_EDGES;
@@ -87,12 +85,6 @@ behavior SusanEdgesThread_PartA(uchar image_buffer[IMAGE_SIZE],  int r[IMAGE_SIZ
 
 	    //-----Delay annotation-----
 	    OS_i.time_wait(19000000);
-	    time = time + 19000000;
-	    if(time>(unsigned long long)SCH_SLICE)
-	    {
-		OS_i.yield();
-		time = 0;
-	    }
 	    //--------------------------
         }                       
 	
@@ -113,11 +105,9 @@ behavior SusanEdgesThread_PartB(uchar image_buffer[IMAGE_SIZE],  int r[IMAGE_SIZ
         uchar c,*p,*cp;
 	
 	//-------OS---------
-	Task se;
-	unsigned long long time;
-	se = OS_i.task_create("se", 1);
-	OS_i.task_start(se);
-	time = 0;
+	Task sb;
+	sb = OS_i.task_create("sb", 1, 2+thID);
+	OS_i.task_start(sb);
 	//-----------------      
         
         max_no = MAX_NO_EDGES;
@@ -287,12 +277,6 @@ behavior SusanEdgesThread_PartB(uchar image_buffer[IMAGE_SIZE],  int r[IMAGE_SIZ
 	    
 		    //-----Delay annotation-----
 	    	    OS_i.time_wait(20000000);
-		    time = time + 20000000;
-	    	    if(time>(unsigned long long)SCH_SLICE)
-		    {
-			OS_i.yield();
-			time = 0;
-		    }
 	            //--------------------------
                 }                            
 
@@ -329,10 +313,21 @@ behavior SusanEdges_PartA (uchar image_buffer[IMAGE_SIZE],  int r[IMAGE_SIZE], u
     SusanEdgesThread_PartA susan_edges_a_thread_1(image_buffer, r, bp, 1, OS_i);
     
     void main(void) {
+	//-------OS---------
+	Task br;
+	int t;
+	br = OS_i.task_create("br", 1, 1);
+	OS_i.task_start(br);
+	//-----------------      
         
-	susan_edges_a_thread_0;
-        susan_edges_a_thread_1;
-        
+	t = OS_i.par_start();
+	par {
+            susan_edges_a_thread_0;
+            susan_edges_a_thread_1;
+        }
+	OS_i.par_end(t);
+	
+	OS_i.task_terminate();
     }
 };
 
@@ -342,10 +337,21 @@ behavior SusanEdges_PartB(uchar image_buffer[IMAGE_SIZE],  int r[IMAGE_SIZE], uc
     SusanEdgesThread_PartB susan_edges_b_thread_1(image_buffer, r, mid, bp, 1, OS_i);
     
     void main(void) {                 
-       
-	susan_edges_b_thread_0;
-        susan_edges_b_thread_1;
-        
+	//-------OS---------
+	Task br;
+	int t;
+	br = OS_i.task_create("br", 1, 1);
+	OS_i.task_start(br);
+	//-----------------      
+	
+	t = OS_i.par_start();
+        par {
+            susan_edges_b_thread_0;
+            susan_edges_b_thread_1;
+        }
+	OS_i.par_end(t);
+	
+	OS_i.task_terminate();
     }
 };
 

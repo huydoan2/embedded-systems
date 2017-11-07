@@ -212,7 +212,7 @@ behavior SusanThinThread(int r[IMAGE_SIZE], uchar mid[IMAGE_SIZE], in int thID, 
 	//-----Delay annotation-----
 	OS_i.time_wait(6400000);
 	time = time + 6400000;
-	if(time>(unsigned long long)SCH_SLICE)
+	if(time>SCH_SLICE)
 	{
 	    OS_i.yield();
 	    time = 0;

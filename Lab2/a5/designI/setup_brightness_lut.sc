@@ -10,7 +10,10 @@ behavior SetupBrightnessLutThread(uchar bp[516], in int thID, OSAPI OS_i)
         int thresh, form;
 	
 	//-------OS---------
+	Task sb;
 	unsigned long long time;
+	sb = OS_i.task_create("sb", 1);
+	OS_i.task_start(sb);
 	time = 0;
 	//-----------------      
   
@@ -29,14 +32,16 @@ behavior SetupBrightnessLutThread(uchar bp[516], in int thID, OSAPI OS_i)
 	    //-----Delay annotation-----
 	    OS_i.time_wait(2700);
 	    time = time + 2700;
-	    if(time>(unsigned long long) SCH_SLICE)
+	    if(time>SCH_SLICE)
 	    {
 	    	OS_i.yield();
 		time = 0;
 	    }
 	    //--------------------------
         }
-	
+
+	OS_i.task_terminate();
+
     }
 
 };

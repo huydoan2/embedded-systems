@@ -32,7 +32,8 @@ behavior SetupBrightnessLutThread(uchar bp[516], in int thID, OSAPI OS_i)
 	    //-----Delay annotation-----
 	    OS_i.time_wait(2700);
 	    time = time + 2700;
-	    if(time>SCH_SLICE)
+
+	    if(time>(unsigned long long) SCH_SLICE)
 	    {
 	    	OS_i.yield();
 		time = 0;

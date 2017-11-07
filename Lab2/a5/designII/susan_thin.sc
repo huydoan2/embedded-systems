@@ -2,9 +2,8 @@
 
 import "c_uchar7220_queue";
 import "c_int7220_queue";
-import "i_os_api";
 
-behavior SusanThinThread(int r[IMAGE_SIZE], uchar mid[IMAGE_SIZE], in int thID, OSAPI OS_i)
+behavior SusanThinThread(int r[IMAGE_SIZE], uchar mid[IMAGE_SIZE], in int thID)
 {
 
     void main (void) {
@@ -15,13 +14,6 @@ behavior SusanThinThread(int r[IMAGE_SIZE], uchar mid[IMAGE_SIZE], in int thID, 
                 m, n, a, b, x, y, i, j;
         uchar *mp;
 
-	//-------OS---------
-	Task st;
-	unsigned long long time;
-	st = OS_i.task_create("st", 1);
-	OS_i.task_start(st);
-	time = 0;
-	//-----------------      
 
 	for (i=4+(Y_SIZE-4-4)/PROCESSORS*thID; i<4+(Y_SIZE-4-4)/PROCESSORS*(thID+1) + (thID+1==PROCESSORS && (Y_SIZE-4-4)%PROCESSORS!=0 ? (Y_SIZE-4-4)%PROCESSORS : 0); i++) {         		          
         //for (i=4;i<Y_SIZE-4;i++)
@@ -210,17 +202,9 @@ behavior SusanThinThread(int r[IMAGE_SIZE], uchar mid[IMAGE_SIZE], in int thID, 
  		
 	    }
 	//-----Delay annotation-----
-	OS_i.time_wait(6400000);
-	time = time + 6400000;
-	if(time>(unsigned long long)SCH_SLICE)
-	{
-	    OS_i.yield();
-	    time = 0;
-	}
+       	waitfor(180000);                   
 	//--------------------------
 	}
-	
-	OS_i.task_terminate();
     }                
 };
 
@@ -240,20 +224,22 @@ behavior SusanThin_WriteOutput(i_uchar7220_sender out_mid, uchar mid[IMAGE_SIZE]
     }
 };
 
-behavior SusanThin(int r[IMAGE_SIZE], uchar mid[IMAGE_SIZE], OSAPI OS_i)
+behavior SusanThin(int r[IMAGE_SIZE], uchar mid[IMAGE_SIZE])
 {
  
-    SusanThinThread susan_thin_thread_0(r, mid, 0, OS_i);
-    SusanThinThread susan_thin_thread_1(r, mid, 1, OS_i);
+    SusanThinThread susan_thin_thread_0(r, mid, 0);
+    SusanThinThread susan_thin_thread_1(r, mid, 1);
     
     void main(void) {        
+       par {
             susan_thin_thread_0;
             susan_thin_thread_1;
+        }
     }
 
 };
 
-behavior Thin(i_int7220_receiver in_r, i_uchar7220_receiver in_mid, i_uchar7220_sender out_mid, OSAPI OS_i)
+behavior Thin(i_int7220_receiver in_r, i_uchar7220_receiver in_mid, i_uchar7220_sender out_mid)
 {
 
     int r[IMAGE_SIZE];
@@ -261,7 +247,7 @@ behavior Thin(i_int7220_receiver in_r, i_uchar7220_receiver in_mid, i_uchar7220_
  
     SusanThin_ReadInput susan_thin_read_input(in_r, in_mid, r, mid);
     SusanThin_WriteOutput susan_thin_write_output(out_mid, mid);   
-    SusanThin susan_thin(r, mid, OS_i);
+    SusanThin susan_thin(r, mid);
     
     void main(void) {
         fsm {

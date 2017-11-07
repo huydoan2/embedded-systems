@@ -87,7 +87,7 @@ behavior SusanEdgesThread_PartA(uchar image_buffer[IMAGE_SIZE],  int r[IMAGE_SIZ
 	    //-----Delay annotation-----
 	    OS_i.time_wait(19000000);
 	    time = time + 19000000;
-	    if(time>SCH_SLICE)
+	    if(time>(unsigned long long) SCH_SLICE)
 	    {
 		OS_i.yield();
 		time = 0;
@@ -283,7 +283,7 @@ behavior SusanEdgesThread_PartB(uchar image_buffer[IMAGE_SIZE],  int r[IMAGE_SIZ
 		    //-----Delay annotation-----
 	    	    OS_i.time_wait(20000000);
 		    time = time + 20000000;
-		    if(time>SCH_SLICE)
+	    	    if(time>(unsigned long long) SCH_SLICE)
 		    {
 			OS_i.yield();
 			time = 0;
@@ -295,7 +295,7 @@ behavior SusanEdgesThread_PartB(uchar image_buffer[IMAGE_SIZE],  int r[IMAGE_SIZ
     
 };  
 
-behavior  SusanEdges_ReadInput(i_uchar7220_receiver in_image, uchar in_image_buffer[IMAGE_SIZE], int r[IMAGE_SIZE], uchar mid[IMAGE_SIZE]) 
+behavior  SusanEdges_ReadInput(i_osuchar7220_receiver in_image, uchar in_image_buffer[IMAGE_SIZE], int r[IMAGE_SIZE], uchar mid[IMAGE_SIZE]) 
 {
     void main(void) {
         in_image.receive(&in_image_buffer);
@@ -341,7 +341,7 @@ behavior SusanEdges_PartB(uchar image_buffer[IMAGE_SIZE],  int r[IMAGE_SIZE], uc
     }
 };
 
-behavior SusanEdges(i_uchar7220_receiver in_image, i_osint7220_sender out_r, i_osuchar7220_sender out_mid, uchar bp[516], i_osuchar7220_sender out_image, OSAPI OS_i)
+behavior SusanEdges(i_osuchar7220_receiver in_image, i_osint7220_sender out_r, i_osuchar7220_sender out_mid, uchar bp[516], i_osuchar7220_sender out_image, OSAPI OS_i)
 {
   
     uchar image_buffer[IMAGE_SIZE];

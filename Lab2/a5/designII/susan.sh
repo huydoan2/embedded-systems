@@ -31,5 +31,3 @@ typedef  unsigned char uchar;
 #define BT 20
 #define DRAWING_MODE 0
 #define MAX_NO_EDGES 2650
-
-#define SCH_SLICE 19000000

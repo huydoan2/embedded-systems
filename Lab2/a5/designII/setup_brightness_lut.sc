@@ -10,8 +10,9 @@ behavior SetupBrightnessLutThread(uchar bp[516], in int thID, OSAPI OS_i)
         int thresh, form;
 	
 	//-------OS---------
-	unsigned long long time;
-	time = 0;
+	Task sb;
+	sb = OS_i.task_create("sb", 1, 2+thID);
+	OS_i.task_start(sb);
 	//-----------------      
   
         thresh = BT;
@@ -28,15 +29,11 @@ behavior SetupBrightnessLutThread(uchar bp[516], in int thID, OSAPI OS_i)
         
 	    //-----Delay annotation-----
 	    OS_i.time_wait(2700);
-	    time = time + 2700;
-	    if(time>(unsigned long long) SCH_SLICE)
-	    {
-	    	OS_i.yield();
-		time = 0;
-	    }
 	    //--------------------------
         }
-	
+
+	OS_i.task_terminate();
+
     }
 
 };
@@ -48,8 +45,22 @@ behavior SetupBrightnessLut(uchar bp[516], OSAPI OS_i)
     SetupBrightnessLutThread setup_brightness_thread_1(bp, 1, OS_i);
        
     void main(void) {
-        setup_brightness_thread_0;
-        setup_brightness_thread_1;
+	
+	//-------OS---------
+	Task br;
+	int t;
+	br = OS_i.task_create("br", 1, 1);
+	OS_i.task_start(br);
+	//-----------------      
+
+	t = OS_i.par_start();
+        par {
+            setup_brightness_thread_0;
+            setup_brightness_thread_1;
+        }
+	OS_i.par_end(t);
+	
+	OS_i.task_terminate();
     }
 
 };

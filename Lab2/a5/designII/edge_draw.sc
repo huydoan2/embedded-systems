@@ -1,11 +1,8 @@
 #include "susan.sh"
 
 import "c_uchar7220_queue";
-import "i_os_api";
-import "c_osuchar7220_queue";
-import "c_osint7220_queue";
 
-behavior EdgeDrawThread_PartA(uchar image_buffer[7220], uchar mid[7220], in int thID, OSAPI OS_i)
+behavior EdgeDrawThread_PartA(uchar image_buffer[7220], uchar mid[7220], in int thID)
 {
 
     void main(void) {
@@ -13,11 +10,6 @@ behavior EdgeDrawThread_PartA(uchar image_buffer[7220], uchar mid[7220], in int 
         int   i;
         uchar *inp, *midp;
         int drawing_mode;
-	
-	//-------OS---------
-	unsigned long long time;
-	time = 0;
-	//-----------------      
         
         drawing_mode = DRAWING_MODE;
         if (drawing_mode==0)
@@ -36,23 +28,16 @@ behavior EdgeDrawThread_PartA(uchar image_buffer[7220], uchar mid[7220], in int 
                 midp++;
 		
 		//-----Delay annotation-----
-	    	OS_i.time_wait(12000000);
-		time = time + 12000000;
-		if(time>(unsigned long long) SCH_SLICE)
-		{
-            	    OS_i.yield();
-		    time = 0;
-		}
+        	waitfor(600000);    
 	      	//--------------------------
             }
         }
-	
      }   
    
 };    
 
 
-behavior EdgeDrawThread_PartB(uchar image_buffer[7220], uchar mid[7220], in int thID, OSAPI OS_i)
+behavior EdgeDrawThread_PartB(uchar image_buffer[7220], uchar mid[7220], in int thID)
 {
 
     void main(void) {
@@ -60,11 +45,6 @@ behavior EdgeDrawThread_PartB(uchar image_buffer[7220], uchar mid[7220], in int 
         int   i;
         uchar  *midp;
         int drawing_mode;
-	
-	//-------OS---------
-	unsigned long long time;
-	time = 0;
-	//-----------------      
         
         drawing_mode = DRAWING_MODE;
      
@@ -78,22 +58,14 @@ behavior EdgeDrawThread_PartB(uchar image_buffer[7220], uchar mid[7220], in int 
             midp++;
 
 	    //-----Delay annotation-----
-	    OS_i.time_wait(12000000);
-	    time = time + 12000000;
-	    if(time>(unsigned long long) SCH_SLICE)
-	    {
-        	    OS_i.yield();
-		    time = 0;
-	    }
+            waitfor(600000);    
 	    //--------------------------
         }
-
-	
     }
     
 };    
 
-behavior EdgeDraw_ReadInput(i_osuchar7220_receiver in_image, i_osuchar7220_receiver in_mid, uchar image_buffer[IMAGE_SIZE], uchar mid[IMAGE_SIZE])
+behavior EdgeDraw_ReadInput(i_uchar7220_receiver in_image, i_uchar7220_receiver in_mid, uchar image_buffer[IMAGE_SIZE], uchar mid[IMAGE_SIZE])
 {
     void main(void) {
         in_image.receive(&image_buffer);
@@ -108,37 +80,36 @@ behavior EdgeDraw_WriteOutput(uchar image_buffer[IMAGE_SIZE],  i_uchar7220_sende
     }
 };
 
-behavior EdgeDraw_PartA(uchar image_buffer[7220], uchar mid[7220], OSAPI OS_i)
+behavior EdgeDraw_PartA(uchar image_buffer[7220], uchar mid[7220])
 {
 
-    EdgeDrawThread_PartA edge_draw_a_thread_0(image_buffer, mid, 0, OS_i);
-    EdgeDrawThread_PartA edge_draw_a_thread_1(image_buffer, mid, 1, OS_i);
+    EdgeDrawThread_PartA edge_draw_a_thread_0(image_buffer, mid, 0);
+    EdgeDrawThread_PartA edge_draw_a_thread_1(image_buffer, mid, 1);
     
     void main(void) {
-	
+      par {
             edge_draw_a_thread_0;
             edge_draw_a_thread_1;
-       
-	
+        }
     }     
 };
 
-behavior EdgeDraw_PartB(uchar image_buffer[7220], uchar mid[7220], OSAPI OS_i)
+behavior EdgeDraw_PartB(uchar image_buffer[7220], uchar mid[7220])
 {
 
-    EdgeDrawThread_PartB edge_draw_b_thread_0(image_buffer, mid, 0, OS_i);
-    EdgeDrawThread_PartB edge_draw_b_thread_1(image_buffer, mid, 1, OS_i);
+    EdgeDrawThread_PartB edge_draw_b_thread_0(image_buffer, mid, 0);
+    EdgeDrawThread_PartB edge_draw_b_thread_1(image_buffer, mid, 1);
     
     void main(void) {
-    
+      par {
             edge_draw_b_thread_0;
             edge_draw_b_thread_1;
-       
+        }
     }     
 };
 
 
-behavior EdgeDraw(i_osuchar7220_receiver in_image, i_osuchar7220_receiver in_mid,  i_uchar7220_sender out_image, OSAPI OS_i)
+behavior EdgeDraw(i_uchar7220_receiver in_image, i_uchar7220_receiver in_mid,  i_uchar7220_sender out_image)
 {
 
     
@@ -147,8 +118,8 @@ behavior EdgeDraw(i_osuchar7220_receiver in_image, i_osuchar7220_receiver in_mid
     
     EdgeDraw_ReadInput edge_draw_read_input(in_image, in_mid, image_buffer, mid);
     EdgeDraw_WriteOutput edge_draw_write_output(image_buffer, out_image);
-    EdgeDraw_PartA edge_draw_a(image_buffer, mid, OS_i);
-    EdgeDraw_PartB edge_draw_b(image_buffer, mid, OS_i);
+    EdgeDraw_PartA edge_draw_a(image_buffer, mid);
+    EdgeDraw_PartB edge_draw_b(image_buffer, mid);
 
     
     void main(void) {
@@ -163,21 +134,15 @@ behavior EdgeDraw(i_osuchar7220_receiver in_image, i_osuchar7220_receiver in_mid
     
 };    
 
-behavior Draw(i_osuchar7220_receiver in_image, i_osuchar7220_receiver in_mid,  i_uchar7220_sender out_image, OSAPI OS_i)
+behavior Draw(i_uchar7220_receiver in_image, i_uchar7220_receiver in_mid,  i_uchar7220_sender out_image)
 {
 
-    EdgeDraw edge_draw(in_image, in_mid,  out_image, OS_i);
+    EdgeDraw edge_draw(in_image, in_mid,  out_image);
     
     void main(void) {
-	Task ed;
-	ed = OS_i.task_create("ed", 1);
-	OS_i.task_start(ed);
-      
         fsm {
             edge_draw: {goto edge_draw;}
         }
-	
-	OS_i.task_terminate();
     }
     
 };

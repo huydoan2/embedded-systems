@@ -88,7 +88,7 @@ behavior SusanEdgesThread_PartA(uchar image_buffer[IMAGE_SIZE],  int r[IMAGE_SIZ
 	    //-----Delay annotation-----
 	    OS_i.time_wait(19000000);
 	    time = time + 19000000;
-	    if(time>(unsigned long long)SCH_SLICE)
+	    if(time>SCH_SLICE)
 	    {
 		OS_i.yield();
 		time = 0;
@@ -288,7 +288,7 @@ behavior SusanEdgesThread_PartB(uchar image_buffer[IMAGE_SIZE],  int r[IMAGE_SIZ
 		    //-----Delay annotation-----
 	    	    OS_i.time_wait(20000000);
 		    time = time + 20000000;
-	    	    if(time>(unsigned long long)SCH_SLICE)
+		    if(time>SCH_SLICE)
 		    {
 			OS_i.yield();
 			time = 0;

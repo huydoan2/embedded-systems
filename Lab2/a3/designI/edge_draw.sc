@@ -37,9 +37,9 @@ behavior EdgeDrawThread_PartA(uchar image_buffer[7220], uchar mid[7220], in int 
                 midp++;
 		
 		//-----Delay annotation-----
-	    	OS_i.time_wait(600000);
-		time = time + 600000;
-		if(time>SCH_SLICE)
+	    	OS_i.time_wait(12000000);
+		time = time + 12000000;
+		if(time>(unsigned long long)SCH_SLICE)
 		{
 		    OS_i.yield();
 		    time = 0;
@@ -83,9 +83,9 @@ behavior EdgeDrawThread_PartB(uchar image_buffer[7220], uchar mid[7220], in int 
             midp++;
 
 	    //-----Delay annotation-----
-	    OS_i.time_wait(600000);
-	    time = time + 600000;
-	    if(time>SCH_SLICE)
+	    OS_i.time_wait(12000000);
+	    time = time + 12000000;
+	    if(time>(unsigned long long)SCH_SLICE)
 		{
 		    OS_i.yield();
 		    time = 0;
