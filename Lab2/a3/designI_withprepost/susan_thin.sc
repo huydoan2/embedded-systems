@@ -3,6 +3,8 @@
 import "c_uchar7220_queue";
 import "c_int7220_queue";
 import "i_os_api";
+import "c_osuchar7220_queue";
+import "c_osint7220_queue";
 
 behavior SusanThinThread(int r[IMAGE_SIZE], uchar mid[IMAGE_SIZE], in int thID, OSAPI OS_i)
 {
@@ -220,7 +222,7 @@ behavior SusanThinThread(int r[IMAGE_SIZE], uchar mid[IMAGE_SIZE], in int thID, 
     }                
 };
 
-behavior SusanThin_ReadInput(i_int7220_receiver in_r, i_uchar7220_receiver in_mid, int r[IMAGE_SIZE], uchar mid[IMAGE_SIZE])
+behavior SusanThin_ReadInput(i_osint7220_receiver in_r, i_osuchar7220_receiver in_mid, int r[IMAGE_SIZE], uchar mid[IMAGE_SIZE])
 {
 
     void main(void) {
@@ -229,7 +231,7 @@ behavior SusanThin_ReadInput(i_int7220_receiver in_r, i_uchar7220_receiver in_mi
     }
 };
 
-behavior SusanThin_WriteOutput(i_uchar7220_sender out_mid, uchar mid[IMAGE_SIZE])
+behavior SusanThin_WriteOutput(i_osuchar7220_sender out_mid, uchar mid[IMAGE_SIZE])
 {
     void main(void) {
         out_mid.send(mid);      
@@ -249,7 +251,7 @@ behavior SusanThin(int r[IMAGE_SIZE], uchar mid[IMAGE_SIZE], OSAPI OS_i)
 
 };
 
-behavior Thin(i_int7220_receiver in_r, i_uchar7220_receiver in_mid, i_uchar7220_sender out_mid, OSAPI OS_i)
+behavior Thin(i_osint7220_receiver in_r, i_osuchar7220_receiver in_mid, i_osuchar7220_sender out_mid, OSAPI OS_i)
 {
 
     int r[IMAGE_SIZE];

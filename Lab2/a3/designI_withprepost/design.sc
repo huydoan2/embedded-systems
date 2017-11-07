@@ -5,32 +5,51 @@ import "susan_thin";
 import "edge_draw";
 import "read_image";
 import "write_image";
+import "c_osuchar7220_queue";
+import "c_osint7220_queue";
 import "c_uchar7220_queue";
 import "i_os_api";
 import "speccos";
 
-behavior PE1(i_uchar7220_receiver in_image, 
-            i_uchar7220_sender out_image ){
+behavior TASK_PE1(i_uchar7220_receiver in_image, 
+            i_uchar7220_sender out_image, OSAPI OS_i){
 
-    c_int7220_queue r(1ul);
-    c_uchar7220_queue mid(1ul);
-    c_uchar7220_queue mid_edge_draw(1ul);
-    c_uchar7220_queue image_edge_draw(1ul);
+    c_osint7220_queue r(1ul, OS_i);
+    c_osuchar7220_queue mid(1ul, OS_i);
+    c_osuchar7220_queue mid_edge_draw(1ul, OS_i);
+    c_osuchar7220_queue image_edge_draw(1ul, OS_i);
 
-    OS OS_i;
     Edges edges(in_image, r, mid, image_edge_draw, OS_i);
     Thin thin(r, mid, mid_edge_draw, OS_i);
     Draw draw(image_edge_draw, mid_edge_draw, out_image, OS_i);
 
     void main(void){
 	
-	OS_i.init();
+	int id;
+	Task t;
+	t = OS_i.task_create("pe1", 1);
+	OS_i.task_start(t);
+	id = OS_i.par_start();
 	par 	{
 		edges.main();
 		thin.main();
 		draw.main();
-	     }	
+	     }
+	OS_i.par_end(id);	
+	OS_i.task_terminate();
 	}
+};
+
+behavior PE1(i_uchar7220_receiver in_image,
+            i_uchar7220_sender out_image)
+{
+	OS OS_i;
+	TASK_PE1 task_pe1(in_image, out_image, OS_i);
+	void main(void)
+	{
+		OS_i.init();
+		task_pe1.main();
+	}	
 };
 
 behavior INPUT(i_receive start,

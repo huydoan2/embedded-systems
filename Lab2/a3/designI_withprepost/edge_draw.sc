@@ -2,6 +2,8 @@
 
 import "c_uchar7220_queue";
 import "i_os_api";
+import "c_osuchar7220_queue";
+import "c_osint7220_queue";
 
 behavior EdgeDrawThread_PartA(uchar image_buffer[7220], uchar mid[7220], in int thID, OSAPI OS_i)
 {
@@ -90,7 +92,7 @@ behavior EdgeDrawThread_PartB(uchar image_buffer[7220], uchar mid[7220], in int 
     
 };    
 
-behavior EdgeDraw_ReadInput(i_uchar7220_receiver in_image, i_uchar7220_receiver in_mid, uchar image_buffer[IMAGE_SIZE], uchar mid[IMAGE_SIZE])
+behavior EdgeDraw_ReadInput(i_osuchar7220_receiver in_image, i_osuchar7220_receiver in_mid, uchar image_buffer[IMAGE_SIZE], uchar mid[IMAGE_SIZE])
 {
     void main(void) {
         in_image.receive(&image_buffer);
@@ -135,7 +137,7 @@ behavior EdgeDraw_PartB(uchar image_buffer[7220], uchar mid[7220], OSAPI OS_i)
 };
 
 
-behavior EdgeDraw(i_uchar7220_receiver in_image, i_uchar7220_receiver in_mid,  i_uchar7220_sender out_image, OSAPI OS_i)
+behavior EdgeDraw(i_osuchar7220_receiver in_image, i_osuchar7220_receiver in_mid,  i_uchar7220_sender out_image, OSAPI OS_i)
 {
 
     
@@ -160,7 +162,7 @@ behavior EdgeDraw(i_uchar7220_receiver in_image, i_uchar7220_receiver in_mid,  i
     
 };    
 
-behavior Draw(i_uchar7220_receiver in_image, i_uchar7220_receiver in_mid,  i_uchar7220_sender out_image, OSAPI OS_i)
+behavior Draw(i_osuchar7220_receiver in_image, i_osuchar7220_receiver in_mid,  i_uchar7220_sender out_image, OSAPI OS_i)
 {
 
     EdgeDraw edge_draw(in_image, in_mid,  out_image, OS_i);
