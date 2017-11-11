@@ -76,7 +76,7 @@ behavior Design(i_receive start, in uchar image_buffer[IMAGE_SIZE], i_sender out
     c_osuchar7220_queue in_image(1ul, OS_i);
     c_uchar7220_queue out_image(1ul);
 
-    HardwareBus hwBus();
+    HardwareBus hwBus;
     MasterDriver master(hwBus);
     SlaveDriver slave(hwBus);
 

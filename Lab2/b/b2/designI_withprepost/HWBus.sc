@@ -20,6 +20,9 @@ import "i_receive";
 # error "Invalid data width"
 #endif
 
+#define IN_ADDR 0
+#define OUT_ADDR 1
+
 
 /* ----- Physical layer, bus protocol ----- */
 
@@ -268,7 +271,8 @@ interface IMasterHardwareBus
   void MasterRead(unsigned bit[ADDR_WIDTH-1:0] addr, void *data, unsigned long len);
   void MasterWrite(unsigned bit[ADDR_WIDTH-1:0] addr, const void* data, unsigned long len);
   
-  void MasterSyncReceive();
+  void MasterSyncReceive0();
+  void MasterSyncReceive1();
 };
   
 interface ISlaveHardwareBus
@@ -276,7 +280,8 @@ interface ISlaveHardwareBus
   void SlaveRead(unsigned bit[ADDR_WIDTH-1:0] addr, void *data, unsigned long len);
   void SlaveWrite(unsigned bit[ADDR_WIDTH-1:0] addr, const void* data, unsigned long len);
   
-  void SlaveSyncSend();
+  void SlaveSyncSend0();
+  void SlaveSyncSend1();
 };
 
 
@@ -307,7 +312,7 @@ channel HardwareBus()
   SlaveHardwareBusLinkAccess SlaveLink(Slave);
 
   
-  void MasterRead(unsigned bit[ADDR_WIDTH-1:0] addr, void *data, unsigned long len) {
+  void MasterRead(unsigned bit[ADDR_WIDTH-1:0] addr, void *data, unsigned long len) {    
     MasterLink.MasterRead(addr, data, len);
   }
   
@@ -323,11 +328,57 @@ channel HardwareBus()
     SlaveLink.SlaveWrite(addr, data, len);
   }
 
-  void MasterSyncReceive() {
+  void MasterSyncReceive0() {
     MasterSync0.receive();
   }
   
-  void SlaveSyncSend() {
+  void SlaveSyncSend0() {
     SlaveSync0.send();
   }
+
+  void MasterSyncReceive1() {
+    MasterSync1.receive();
+  }
+  
+  void SlaveSyncSend1() {
+    SlaveSync1.send();
+  }
+};
+
+interface IMasterDriver
+{
+  void send(const void* data, unsigned long len);
+  void receive(void* data, unsigned long len);
+};
+
+interface ISlaveDriver
+{
+  void send(const void* data, unsigned long len);
+  void receive(void* data, unsigned long len);
+};
+
+channel MasterDriver(IMasterHardwareBus Bus)
+  implements IMasterDriver{
+    void send(const void* data, unsigned long len){
+      Bus.MasterSyncReceive1();
+      Bus.MasterWrite(OUT_ADDR, data, len);
+    }
+
+    void receive(void* data, unsigned long len){
+      Bus.MasterSyncReceive0();
+      Bus.MasterRead(IN_ADDR, data, len);
+    }
+};
+
+channel SlaveDriver(ISlaveHardwareBus Bus)
+  implements ISlaveDriver{
+    void send(const void* data, unsigned long len){
+      Bus.SlaveSyncSend0();
+      Bus.SlaveWrite(IN_ADDR, data, len);
+    }
+
+    void receive(void* data, unsigned long len){
+      Bus.SlaveSyncSend1();
+      Bus.SlaveRead(OUT_ADDR, data, len);
+    }
 };

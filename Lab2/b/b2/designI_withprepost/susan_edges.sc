@@ -296,7 +296,7 @@ behavior SusanEdgesThread_PartB(uchar image_buffer[IMAGE_SIZE],  int r[IMAGE_SIZ
     
 };  
 
-behavior  SusanEdges_ReadInput(IMasterDriver in_image, uchar in_image_buffer[IMAGE_SIZE], int r[IMAGE_SIZE], uchar mid[IMAGE_SIZE]) 
+behavior SusanEdges_ReadInput(IMasterDriver in_image, uchar in_image_buffer[IMAGE_SIZE], int r[IMAGE_SIZE], uchar mid[IMAGE_SIZE]) 
 {
     void main(void) {
         in_image.receive(&in_image_buffer, IMAGE_SIZE);

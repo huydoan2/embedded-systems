@@ -3,8 +3,9 @@
 import "i_receive";
 import "c_osuchar7220_queue";
 import "c_uchar7220_queue";
+import "HWBus";
 
-behavior ReadImage(i_receive start, in uchar image_buffer[IMAGE_SIZE], i_osuchar7220_sender out_image)
+behavior ReadImage(i_receive start, in uchar image_buffer[IMAGE_SIZE], ISlaveDriver out_image)
 {
 
     void main(void) {
@@ -15,7 +16,7 @@ behavior ReadImage(i_receive start, in uchar image_buffer[IMAGE_SIZE], i_osuchar
             start.receive();
             for (i=0; i<IMAGE_SIZE; i++)
                 image_buffer_out[i] = image_buffer[i];
-            out_image.send(image_buffer_out);       
+            out_image.send(image_buffer_out, IMAGE_SIZE);       
         }
     }
          
