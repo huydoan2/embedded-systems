@@ -45,14 +45,14 @@ channel HardwareBus()
 	A = addr;
   	notify ready;
   	wait ack;
-  	waitfor(1000);
+    	waitfor((15000/4)*sizeof(unsigned char)*len);
   	memcpy(data, D, sizeof(unsigned char)*len);
   }
   
   void MasterWrite(unsigned bit[ADDR_WIDTH-1:0] addr, const void *data, unsigned long len) {
     A = addr;
     memcpy(D, data, sizeof(unsigned char)*len);
-    waitfor(1000);
+    waitfor((20000/4)*sizeof(unsigned char)*len);
     notify ready;
     wait ack;
   }
@@ -61,7 +61,7 @@ channel HardwareBus()
     do {
   		wait ready;
   	} while(addr != A);
-  	waitfor(2000);
+    	waitfor((20000/4)*sizeof(unsigned char)*len);
   	memcpy(data, D, sizeof(unsigned char)*len);
   	notify ack;
   }
@@ -70,7 +70,7 @@ channel HardwareBus()
     do {
   		wait ready;
   	} while(addr != A);
-  	waitfor(2000);
+    	waitfor((20000/4)*sizeof(unsigned char)*len);
   	memcpy(D, data, sizeof(unsigned char)*len);
   	notify ack;
   }

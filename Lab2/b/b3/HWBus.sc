@@ -52,9 +52,9 @@ channel MasterHardwareBus(out signal unsigned bit[ADDR_WIDTH-1:0] A,
   {
     A = a;
     D = d;
-    waitfor(1000);
     notify ready;
     wait ack;
+    waitfor(15000);
   }
 
   void masterRead(unsigned bit[ADDR_WIDTH-1:0] a, unsigned bit[DATA_WIDTH-1:0] *d)
@@ -62,7 +62,7 @@ channel MasterHardwareBus(out signal unsigned bit[ADDR_WIDTH-1:0] A,
     A = a;
     notify ready;
     wait ack;
-    waitfor(1000);
+    waitfor(20000);
     *d = D;
   }
 
@@ -81,8 +81,8 @@ channel SlaveHardwareBus(in  signal unsigned bit[ADDR_WIDTH-1:0] A,
     do{
             wait ready;
     } while(a != A);
-    waitfor(2000);
     D = d;
+    waitfor(20000);
     notify ack;
   }
 
@@ -91,8 +91,8 @@ channel SlaveHardwareBus(in  signal unsigned bit[ADDR_WIDTH-1:0] A,
     do {
             wait ready;
     } while(a != A);
-    waitfor(2000);
     *d = D;
+    waitfor(20000);
     notify ack;
   }
 

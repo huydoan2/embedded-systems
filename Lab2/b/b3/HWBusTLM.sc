@@ -35,9 +35,9 @@ channel HWBusTLM()
 	{
 		A = a;
 		D = d;
-		waitfor(1000);
 		notify rdy;
 		wait ack;
+		waitfor(15000);
 	}
 
 	void masterRead(unsigned bit[ADDR_WIDTH-1:0] a, unsigned bit[DATA_WIDTH-1:0] *d)
@@ -45,8 +45,8 @@ channel HWBusTLM()
 		A = a;
 		notify rdy;
 		wait ack;
-		waitfor(1000);
 		*d = D;
+		waitfor(20000);
 	}
 
 	void slaveWrite(unsigned bit[ADDR_WIDTH-1:0] a, unsigned bit[DATA_WIDTH-1:0] d)
@@ -54,9 +54,9 @@ channel HWBusTLM()
 		do{
 			wait rdy;
 		} while(a != A);
-		waitfor(2000);
 		D = d;
 		notify ack;
+		waitfor(20000);
 	}
 
 	void slaveRead (unsigned bit[ADDR_WIDTH-1:0] a, unsigned bit[DATA_WIDTH-1:0] *d)
@@ -64,8 +64,8 @@ channel HWBusTLM()
 		do {
 			wait rdy;
 		} while(a != A);
-		waitfor(2000);
 		*d = D;
 		notify ack;
+		waitfor(20000);
 	}
 };
