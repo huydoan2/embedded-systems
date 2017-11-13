@@ -31,7 +31,7 @@ behavior TASK_PE1(IMasterDriver image,
 	t = OS_i.task_create("pe1", 1);
 	OS_i.task_start(t);
 	id = OS_i.par_start();
-	par 	{
+	par {
 		edges.main();
 		thin.main();
 		draw.main();
@@ -44,6 +44,7 @@ behavior TASK_PE1(IMasterDriver image,
 behavior PE1(IMasterDriver image, OSAPI OS_i)
 {
 	TASK_PE1 task_pe1(image, OS_i);
+
 	void main(void)
 	{
 		task_pe1.main();
@@ -73,12 +74,17 @@ behavior OUTPUT(ISlaveDriver out_image,
 
 behavior Design(i_receive start, in uchar image_buffer[IMAGE_SIZE], i_sender out_image_susan){
     OS OS_i;
+    signal unsigned bit[1] receive_intr_flag = 0;
+    signal unsigned bit[1] send_intr_flag = 0;
+    HardwareBus hwBus(OS_i);
+    MasterDriver master(hwBus, receive_intr_flag, send_intr_flag);
+    SlaveDriver slave(hwBus);
+
+    ReceiveIntrController receive_intr_ctrl(hwBus, receive_intr_flag);
+    SendIntrController send_intr_ctrl(hwBus, send_intr_flag);
+
     c_osuchar7220_queue in_image(1ul, OS_i);
     c_uchar7220_queue out_image(1ul);
-
-    HardwareBus hwBus(OS_i);
-    MasterDriver master(hwBus);
-    SlaveDriver slave(hwBus);
 
     PE1 pe1(master, OS_i);
     INPUT input(start, image_buffer, slave);
@@ -88,7 +94,9 @@ behavior Design(i_receive start, in uchar image_buffer[IMAGE_SIZE], i_sender out
     void main(void){
       OS_i.init();
       par{     
-	    input.main();
+	        receive_intr_ctrl.main();
+  	        send_intr_ctrl.main();
+            input.main();
             pe1.main();
             output.main();
     }

@@ -147,13 +147,10 @@ channel MasterHardwareSyncDetect(in signal unsigned bit[1] intr, out signal unsi
 {
   void receive(void)
   {
-    int t;
-    intr_ack = 1;
-    waitfor(5000);
-    intr_ack = 0;
-    t =  OS_i.pre_wait();
-    wait(intr);
-    OS_i.post_wait(t);
+	int t;
+	t =  OS_i.pre_wait();
+    wait(rising intr);
+	OS_i.post_wait(t);
   }
 };
 
@@ -290,7 +287,6 @@ interface ISlaveHardwareBus
   void SlaveSyncSend0();
   void SlaveSyncSend1();
 
-  int read_intr_ack(int i);
 };
 
 
@@ -354,11 +350,6 @@ channel HardwareBus(OSAPI OS_i)
   void SlaveSyncSend1() {
     SlaveSync1.send();
   }
-
-  int read_intr_ack(int i) {
-    if(i==0)  wait(intr_ack0);
-    else  wait(intr_ack1);
-  }
 };
 
 interface IMasterDriver
@@ -373,35 +364,52 @@ interface ISlaveDriver
   void receive(void* data, unsigned long len);
 };
 
-channel MasterDriver(IMasterHardwareBus Bus)
-  implements IMasterDriver{
-    void send(const void* data, unsigned long len){
+behavior ReceiveIntrController(IMasterHardwareBus Bus, signal unsigned bit[1] flag)
+{
+  void main(void){
+    while(true){
+      Bus.MasterSyncReceive0();
+      flag = 1;
+    }
+  }
+};
+
+behavior SendIntrController(IMasterHardwareBus Bus, signal unsigned bit[1] flag)
+{
+  void main(void){
+    while(true){
       Bus.MasterSyncReceive1();
-      Bus.MasterWrite(OUT_ADDR, data, len);
+      flag = 1;
+    }
+  }
+};
+
+channel MasterDriver(IMasterHardwareBus Bus, signal unsigned bit[1] receive_intr_flag, signal unsigned bit[1] send_intr_flag)
+  implements IMasterDriver{
+      void send(const void* data, unsigned long len){
+	while(!send_intr_flag) wait(send_intr_flag);
+	Bus.MasterWrite(OUT_ADDR, data, len);
+      send_intr_flag = 0;
     }
 
     void receive(void* data, unsigned long len){
-      Bus.MasterSyncReceive0();
-      Bus.MasterRead(IN_ADDR, data, len);
+     while(!receive_intr_flag) wait(receive_intr_flag); 
+     Bus.MasterRead(IN_ADDR, data, len);
+     receive_intr_flag = 0;
     }
 };
 
 channel SlaveDriver(ISlaveHardwareBus Bus)
   implements ISlaveDriver{
     void send(const void* data, unsigned long len){
-      //do{
-      Bus.read_intr_ack(0);
-     	 Bus.SlaveSyncSend0();
-      //} while(Bus.read_intr_ack(0)==0);
-      
-      Bus.SlaveWrite(IN_ADDR, data, len);
+     	 
+       Bus.SlaveSyncSend0();
+       Bus.SlaveWrite(IN_ADDR, data, len);
     }
 
     void receive(void* data, unsigned long len){
-     //do{
-     Bus.read_intr_ack(1);
+
      	 Bus.SlaveSyncSend1();
-     //} while(Bus.read_intr_ack(1)==0);
-      Bus.SlaveRead(OUT_ADDR, data, len);
+       Bus.SlaveRead(OUT_ADDR, data, len);
     }
 };
