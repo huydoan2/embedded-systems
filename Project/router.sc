@@ -15,8 +15,8 @@ behavior Router(in int id_x, in int id_y,
 		int random_factor = 0;
 		// Setup constants
 		// w2 = w - 1, w3 = -1, w4 = -w, w5 = 1- w, w6 = 1
-		int wax[6] = {4,7,-7,-4,-7,7};
-		int way[6] = {3, -3, 2, -3, 3, -2};
+		int wax[6] = {4,-3,-7,-4, 3, 7};
+		int way[6] = {3, 7, 4,-3,-7,-4};
 
 		// wax[0] =  4; way[0] =  3;
 		// wax[1] =  7; way[1] = -3;
@@ -122,7 +122,7 @@ behavior Router(in int id_x, in int id_y,
 			j = -1;
 
 			modulo_alpha(diff_x, diff_y, &r_x, &r_y, &j);
-			if(r_x + r_y > N){
+			if(r_x + r_y >= N){
 				// need to take modulus
 				r_x = diff_x - wax[j];
 				r_y = diff_y - way[j];
