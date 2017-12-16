@@ -1,13 +1,13 @@
 // Main file. Specifies the network architecture. Default: router based NOC
 
-#include "snn.sh"
 #include "PE_replay.sc"
 
 behavior Main()
 
 {
 
-	PE_node PE_0;
+	unsigned int i = 0;
+	PE_node PE_0(i);
 
 	int main()
 	{
