@@ -67,6 +67,8 @@ void exchange_neurons(unsigned int neuron_1, unsigned int neuron_2)
 int main()
 {
 	int num_neurons = 31325;
+
+
 	exchange_neurons(0x00000001, 0x01000001);
 
 	//

@@ -1776,6 +1776,190 @@ extern int getloadavg (double __loadavg[], int __nelem)
 # 964 "/usr/include/stdlib.h" 3 4
 
 # 5 "PE_replay.sc" 2
+# 1 "/usr/include/string.h" 1 3 4
+# 27 "/usr/include/string.h" 3 4
+# 1 "/usr/local/packages/sce-20170901/inc/features.h" 1 3 4
+# 28 "/usr/include/string.h" 2 3 4
+
+
+
+
+
+
+# 1 "/usr/lib/gcc/x86_64-redhat-linux/4.4.7/include/stddef.h" 1 3 4
+# 35 "/usr/include/string.h" 2 3 4
+
+
+
+
+
+
+
+
+
+extern void *memcpy (void * __dest,
+       const void * __src, size_t __n)
+     ;
+
+
+extern void *memmove (void *__dest, const void *__src, size_t __n)
+     ;
+
+
+
+
+
+
+extern void *memccpy (void * __dest, const void * __src,
+        int __c, size_t __n)
+     ;
+
+
+
+
+
+extern void *memset (void *__s, int __c, size_t __n) ;
+
+
+extern int memcmp (const void *__s1, const void *__s2, size_t __n)
+     ;
+# 95 "/usr/include/string.h" 3 4
+extern void *memchr (const void *__s, int __c, size_t __n)
+      ;
+
+
+# 126 "/usr/include/string.h" 3 4
+
+
+extern char *strcpy (char * __dest, const char * __src)
+     ;
+
+extern char *strncpy (char * __dest,
+        const char * __src, size_t __n)
+     ;
+
+
+extern char *strcat (char * __dest, const char * __src)
+     ;
+
+extern char *strncat (char * __dest, const char * __src,
+        size_t __n) ;
+
+
+extern int strcmp (const char *__s1, const char *__s2)
+     ;
+
+extern int strncmp (const char *__s1, const char *__s2, size_t __n)
+     ;
+
+
+extern int strcoll (const char *__s1, const char *__s2)
+     ;
+
+extern size_t strxfrm (char * __dest,
+         const char * __src, size_t __n)
+     ;
+
+# 175 "/usr/include/string.h" 3 4
+extern char *strdup (const char *__s)
+     ;
+# 210 "/usr/include/string.h" 3 4
+
+# 235 "/usr/include/string.h" 3 4
+extern char *strchr (const char *__s, int __c)
+     ;
+# 262 "/usr/include/string.h" 3 4
+extern char *strrchr (const char *__s, int __c)
+     ;
+
+
+# 281 "/usr/include/string.h" 3 4
+
+
+
+extern size_t strcspn (const char *__s, const char *__reject)
+     ;
+
+
+extern size_t strspn (const char *__s, const char *__accept)
+     ;
+# 314 "/usr/include/string.h" 3 4
+extern char *strpbrk (const char *__s, const char *__accept)
+     ;
+# 342 "/usr/include/string.h" 3 4
+extern char *strstr (const char *__haystack, const char *__needle)
+     ;
+
+
+
+
+extern char *strtok (char * __s, const char * __delim)
+     ;
+
+
+
+
+extern char *__strtok_r (char * __s,
+    const char * __delim,
+    char ** __save_ptr)
+     ;
+
+extern char *strtok_r (char * __s, const char * __delim,
+         char ** __save_ptr)
+     ;
+# 397 "/usr/include/string.h" 3 4
+
+
+extern size_t strlen (const char *__s)
+     ;
+
+# 411 "/usr/include/string.h" 3 4
+
+
+extern char *strerror (int __errnum) ;
+
+# 431 "/usr/include/string.h" 3 4
+extern int __xpg_strerror_r (int __errnum, char *__buf, size_t __buflen)
+     ;
+# 451 "/usr/include/string.h" 3 4
+extern void __bzero (void *__s, size_t __n) ;
+
+
+
+extern void bcopy (const void *__src, void *__dest, size_t __n)
+     ;
+
+
+extern void bzero (void *__s, size_t __n) ;
+
+
+extern int bcmp (const void *__s1, const void *__s2, size_t __n)
+     ;
+# 489 "/usr/include/string.h" 3 4
+extern char *index (const char *__s, int __c)
+     ;
+# 517 "/usr/include/string.h" 3 4
+extern char *rindex (const char *__s, int __c)
+     ;
+
+
+
+
+extern int ffs (int __i) ;
+# 536 "/usr/include/string.h" 3 4
+extern int strcasecmp (const char *__s1, const char *__s2)
+     ;
+
+
+extern int strncasecmp (const char *__s1, const char *__s2, size_t __n)
+     ;
+# 559 "/usr/include/string.h" 3 4
+extern char *strsep (char ** __stringp,
+       const char * __delim)
+     ;
+# 646 "/usr/include/string.h" 3 4
+
+# 6 "PE_replay.sc" 2
 # 1 "snn.sh" 1
 # 13 "snn.sh"
 const unsigned int PE_ADDR[37] = {
@@ -1823,7 +2007,7 @@ const unsigned int PE_ADDR[37] = {
      0x02FD0000,
      0x03FD0000
     };
-# 6 "PE_replay.sc" 2
+# 7 "PE_replay.sc" 2
 # 1 "neuron_model.sh" 1
 # 13 "neuron_model.sh"
 float LIF_slope(float V, float I)
@@ -1834,7 +2018,7 @@ float LIF_slope(float V, float I)
  ret_val = t2/300;
  return ret_val;
 }
-# 7 "PE_replay.sc" 2
+# 8 "PE_replay.sc" 2
 # 1 "synapse_model.sh" 1
 
 
@@ -2842,8 +3026,47 @@ float synaptic_current(unsigned int w, float t_diff)
  I = 1*w*(exp((-t_diff)/15) - exp(((-t_diff)*4.0)/15));
  return I;
 }
-# 8 "PE_replay.sc" 2
+# 9 "PE_replay.sc" 2
+# 1 "c_packet_queue.sc" 1
+# 1 "/usr/local/packages/sce-20170901/inc/c_typed_queue.sh" 1 3 4
+# 64 "/usr/local/packages/sce-20170901/inc/c_typed_queue.sh" 3 4
+# 1 "/usr/lib/gcc/x86_64-redhat-linux/4.4.7/include/stddef.h" 1 3 4
+# 149 "/usr/lib/gcc/x86_64-redhat-linux/4.4.7/include/stddef.h" 3 4
+typedef long int ptrdiff_t;
+# 65 "/usr/local/packages/sce-20170901/inc/c_typed_queue.sh" 2 3 4
 
+
+extern void perror(const char*);
+
+
+extern void *memcpy(void*, const void*, size_t);
+
+
+extern void abort(void);
+extern void *malloc(size_t);
+extern void free(void*);
+
+
+# 1 "/usr/local/packages/sce-20170901/inc/i_typed_sender.sh" 1 3 4
+# 79 "/usr/local/packages/sce-20170901/inc/c_typed_queue.sh" 2 3 4
+# 1 "/usr/local/packages/sce-20170901/inc/i_typed_receiver.sh" 1 3 4
+# 80 "/usr/local/packages/sce-20170901/inc/c_typed_queue.sh" 2 3 4
+# 1 "/usr/local/packages/sce-20170901/inc/i_typed_tranceiver.sh" 1 3 4
+# 81 "/usr/local/packages/sce-20170901/inc/c_typed_queue.sh" 2 3 4
+# 2 "c_packet_queue.sc" 2
+
+typedef struct
+{
+ unsigned int sender;
+ unsigned int time;
+ unsigned int target;
+} packet;
+
+interface i_packet_tranceiver { note _SCE_STANDARD_LIB = { "i_tranceiver", "packet", "packet" }; void send(packet d); void receive(packet *d); };
+interface i_packet_sender { note _SCE_STANDARD_LIB = { "i_sender", "packet", "packet" }; void send(packet d); };
+interface i_packet_receiver { note _SCE_STANDARD_LIB = { "i_receiver", "packet", "packet" }; void receive(packet *d); };
+channel c_packet_queue(in const unsigned long size) implements i_packet_sender, i_packet_receiver, i_packet_tranceiver { note _SCE_STANDARD_LIB = { "c_queue", "packet", "packet" }; event r, s; unsigned long wr = 0; unsigned long ws = 0; unsigned long p = 0; unsigned long n = 0; packet *buffer = 0; void setup(void) { if (!buffer) { unsigned long i; packet dummy; if (!(buffer = (packet*) malloc(sizeof(packet)*size))) { perror("c_typed_queue"); abort(); } for(i=0; i<size; i++) { memcpy(&buffer[i], &dummy, sizeof(packet)); } } } void cleanup(void) { if (! n) { free(buffer); buffer = 0; } } void receive(packet *d) { while(! n) { wr++; wait r; wr--; } if (n <= p) { *d = buffer[p - n]; } else { *d = buffer[p + size - n]; } n--; if (ws) { notify s; } cleanup(); } void send(packet d) { while(n >= size) { ws++; wait s; ws--; } setup(); buffer[p] = d; p++; if (p >= size) { p = 0; } n++; if (wr) { notify r; } } };
+# 10 "PE_replay.sc" 2
 
 
 unsigned int arr_spikes[1024] = {0};
@@ -2855,6 +3078,7 @@ unsigned int time_arr[1024] = {0};
 unsigned int spikes[1000000];
 unsigned int t_spikes[1000000];
 
+unsigned int comm[37] = {0};
 
 behavior PE_node(unsigned int id)
 {
@@ -2975,6 +3199,31 @@ behavior PE_node(unsigned int id)
                 fclose(input_file);
      }
 
+ void accumulate_stats()
+ {
+  FILE *out_file;
+  char fname[10] = "PE";
+  char result[10];
+  int i;
+  sprintf(result, "%u", my_PE_addr);
+  if(my_PE_addr<10){
+   fname[3] = result[0];
+   fname[4] = '\0';
+  }
+  else{
+   fname[3] = result[0];
+   fname[4] = result[1];
+   fname[5] = '\0';
+  }
+  out_file = fopen(fname, "w");
+
+  for(i=0; i<37; i++)
+  {
+   fprintf(out_file, "%u\n", comm[i]);
+  }
+  fclose(out_file);
+
+ }
 
 
  void initialize()
@@ -3008,6 +3257,21 @@ behavior PE_node(unsigned int id)
 
 
   waitfor(500);
+ }
+
+ void read_spikes_external()
+ {
+  packet p;
+  int i;
+
+  register_spikes(p.sender, p.target, p.time);
+
+
+  for(i=0; i<37; i++)
+  if(PE_ADDR[i]==(p.sender & 0xFFFF0000)) {
+   comm[i]++;
+   break;
+  }
  }
 
  void send_spikes_external(unsigned int neuron_addr, unsigned int post_addr, unsigned int t_local) {}
@@ -3107,12 +3371,14 @@ behavior PE_node(unsigned int id)
   while(time<500)
   {
 
+   read_spikes_external();
    compute_currents();
    compute_voltages();
 
    time = time + 1;
   }
 
+  accumulate_stats();
   print_spikes();
  }
 
