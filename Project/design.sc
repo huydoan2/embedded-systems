@@ -13,22 +13,24 @@ behavior PE(in int id, i_packet_receiver router, i_packet_sender pe){
 		int i;
 		sender = -1; target = -1;
 
-		if (id != 1){
+		if (id != 0){
 			p.sender = PE_ADDR[id];
 			p.time = 5;
 			p.target = PE_ADDR[0];
 			pe.send(p);
 		}
 		else{
-			router.receive(&p);
-			for(i = 0; i < NUM_PE; ++i){
-				if(PE_ADDR[i] == p.sender)
-					sender = i;
-				else if(PE_ADDR[i] == p.target)
-					target = i;
+			while(1){
+				router.receive(&p);
+				for(i = 0; i < NUM_PE; ++i){
+					if(PE_ADDR[i] == p.sender)
+						sender = i;
+					else if(PE_ADDR[i] == p.target)
+						target = i;
 
+				}
+				printf("sender %d\ntime %d\ntarget %d\n", sender, p.time, target);
 			}
-			printf("sender %d\ntime %d\ntarget %d\n", sender, p.time, target);
 		}
 	}
 };

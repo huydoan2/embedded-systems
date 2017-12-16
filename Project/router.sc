@@ -56,15 +56,27 @@ behavior Router(in int id_x, in int id_y,
 			*j = -1;		// v = aw^j + bw^(j+1)
 			// Sector 1 or Sector 4
 			if(x*y >= 0){
-				if (x >= 0){
+				if (x > 0){
 					*r_x = x;
 					*r_y = y;
 					*j = 0;
 				}
-				else{
+				else if (x < 0){
 					*r_x = abs(x);
 					*r_y = abs(y);
 					*j = 3;
+				}
+				else if (x == 0){
+					if(y > 0){
+						*r_x = x;
+						*r_y = y;
+						*j = 0;
+					}
+					else{
+						*r_x = abs(x);
+						*r_y = abs(y);
+						*j = 3;
+					}
 				}
 			}
 			// Sector 2 or 3
