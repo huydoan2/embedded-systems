@@ -2,10 +2,11 @@
 
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 #include "snn.sh"
 #include "neuron_model.sh"
 #include "synapse_model.sh"
-
+#include "c_packet_queue.sc"
 
 //Global to prevent running out of stack space!!
 unsigned int arr_spikes[NUM_PER_PE] = {0};
@@ -17,6 +18,7 @@ unsigned int time_arr[NUM_PER_PE] = {0};
 unsigned int spikes[1000000];
 unsigned int t_spikes[1000000];
 
+unsigned int comm[NUM_PE] = {0};
 
 behavior PE_node(unsigned int id)
 {
@@ -137,6 +139,31 @@ behavior PE_node(unsigned int id)
                 fclose(input_file);
     	}
 
+	void accumulate_stats()
+	{
+		FILE *out_file;
+		char fname[10] = "PE";
+		char result[10];
+		int i;
+		sprintf(result, "%u", my_PE_addr);
+		if(my_PE_addr<10){
+			fname[3] = result[0];
+			fname[4] = '\0';
+		}
+		else{
+			fname[3] = result[0];
+			fname[4] = result[1];
+			fname[5] = '\0';
+		} 
+		out_file = fopen(fname, "w");
+	
+		for(i=0; i<NUM_PE; i++)
+		{
+			fprintf(out_file, "%u\n", comm[i]); 
+		}
+		fclose(out_file);	
+		
+	}
 
 	//Read input neuron map. Also set inputs if any
 	void initialize()
@@ -170,6 +197,21 @@ behavior PE_node(unsigned int id)
 	
 		//WAITFOR update synapse weight here.
 		waitfor(500);
+	}
+
+	void read_spikes_external()
+	{
+		packet p;
+		int i;
+		//receiver.read(p);
+		register_spikes(p.sender, p.target, p.time);
+
+		//Accumulate stats for communication
+		for(i=0; i<NUM_PE; i++)
+		if(PE_ADDR[i]==(p.sender & 0xFFFF0000)) {
+			comm[i]++;
+			break;
+		}	
 	}
 
 	void send_spikes_external(unsigned int neuron_addr, unsigned int post_addr, unsigned int t_local) {}
@@ -268,13 +310,15 @@ behavior PE_node(unsigned int id)
 		//Time step
 		while(time<SIM_TIME)
 		{
-		
+
+			read_spikes_external();		
 			compute_currents();
 			compute_voltages();	
 			//Advance time step now
 			time = time + TIME_STEP;
 		}
 		
+		accumulate_stats();
 		print_spikes();	
 	}	
 
