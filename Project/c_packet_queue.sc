@@ -1,11 +1,15 @@
 #include <c_typed_queue.sh>	/* make the template available */
 
-typedef struct 
+#define QUEUE_SIZE 100
+
+typedef struct
 {
 	unsigned int sender;
 	unsigned int time;
 	unsigned int target;	
-} packet;
+} packet_t;
+
+typedef packet_t * packet;
 
 DEFINE_I_TYPED_TRANCEIVER(packet, packet)
 DEFINE_I_TYPED_SENDER(packet, packet)
