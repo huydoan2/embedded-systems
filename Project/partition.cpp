@@ -3,7 +3,9 @@
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
+#include <vector>
 #include "snn.sh"
 
 using namespace std;
@@ -13,45 +15,71 @@ void create_initial_partition(unsigned int num_neurons)
 	unsigned int bin_size = (num_neurons/NUM_PE) + 1;
 	unsigned int neuron_number = 1;
 	unsigned int mapping[num_neurons];
+	unsigned int offset;
 	ifstream conn;
 	conn.open("connectivity_matrix");
-	for(int j=0; j<NUM_PE; j++)
+	for(int j=0; j<1; j++)
 	{
 		ofstream myfile;
-		string fname = "PE" + to_string((long long)j) + "_mapping"; 		
+		string fname = "connectivity_matrix_mod"; 		
   		myfile.open(fname);
-		for(int i=0; i<bin_size; i++)
+		string line;
+		while(getline(conn, line))
 		{
-			string line;
-			if(getline(conn, line))
+			string token;
+			istringstream iss(line);
+			while(getline(iss, token, ' '))
 			{
-				myfile << line << "\n";
+				unsigned int tk = stol(token);
+				unsigned int PE_addr = PE_ADDR[(tk/bin_size)];
+				unsigned int addr = tk%bin_size;
+				addr = PE_addr + addr;	
+				myfile << addr << " ";
 			}
-			else break;
+			myfile << "\n";
 		}
+
 		myfile.close();
 	}
 	conn.close();
-	/*		
-	for(int j=0; j<NUM_PE; j++)
+	
+	ifstream spike;
+	spike.open("spike_matrix");
+	for(int j=0; j<1; j++)
 	{
 		ofstream myfile;
-		string fname = "PE" + to_string((long long)j) + "_mapping"; 		
+		string fname = "spike_matrix_mod"; 		
   		myfile.open(fname);
-		for(int i=0; i<bin_size; i++)
+		string line;
+		while(getline(spike, line))
 		{
-			if(neuron_number>num_neurons) break;
-			else myfile << neuron_number << "\n";
-			neuron_number++;
+			string token;
+			istringstream iss(line);	
+			
+			getline(iss, token, ' ');
+			myfile << token << " ";
+			getline(iss, token, ' ');
+		
+			unsigned int tk = stol(token);
+			unsigned int PE_addr = PE_ADDR[(tk/bin_size)];
+			unsigned int addr = tk%bin_size;
+			addr = PE_addr + addr;	
+			myfile << addr;	
+			myfile << "\n";
 		}
-	}	
-	*/	
+		
+
+		myfile.close();
+	}
+	spike.close();
 }
 
 int main()
 {
 	int num_neurons = 31325;
 	create_initial_partition(num_neurons);
+
+	//
 	
 	return 0;
 	
