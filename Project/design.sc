@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include "snn.sh"
 
 import "c_packet_queue";
 import "router";
@@ -9,15 +9,26 @@ behavior PE(in int id, i_packet_receiver router, i_packet_sender pe){
 	
 	void main(void){
 		packet p;
+		int sender, target;
+		int i;
+		sender = -1; target = -1;
+
 		if (id != 1){
-			p.sender = id;
+			p.sender = PE_ADDR[id];
 			p.time = 5;
-			p.target = 1;
+			p.target = PE_ADDR[0];
 			pe.send(p);
 		}
 		else{
 			router.receive(&p);
-			printf("sender %d\ntime%d\ntarget%d\n", p.sender, p.time, p.target);
+			for(i = 0; i < NUM_PE; ++i){
+				if(PE_ADDR[i] == p.sender)
+					sender = i;
+				else if(PE_ADDR[i] == p.target)
+					target = i;
+
+			}
+			printf("sender %d\ntime %d\ntarget %d\n", sender, p.time, target);
 		}
 	}
 };
@@ -177,5 +188,7 @@ behavior Main(){
 
 	int main(void){
 		d.main();
+
+		return 0;
 	}
 };
