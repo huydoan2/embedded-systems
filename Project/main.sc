@@ -1,17 +1,15 @@
 // Main file. Specifies the network architecture. Default: router based NOC
 
-#include "PE_replay.sc"
+import "design.sc";
 
 behavior Main()
 
 {
-
-	unsigned int i = 0;
-	PE_node PE_0(i);
+	Design d;
 
 	int main()
 	{
-		PE_0.main();		
+		d.main();		
 		return 0;
 	}	
 

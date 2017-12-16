@@ -3,12 +3,16 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+
 #include "snn.sh"
 #include "neuron_model.sh"
 #include "synapse_model.sh"
-#include "c_packet_queue.sc"
 
-//Global to prevent running out of stack space!!
+import "c_packet_queue.sc";
+
+
+behavior PE(in int id, i_packet_receiver router_to_pe, i_packet_sender pe_to_router, inout int start, in int end, inout int tsync)
+{
 unsigned int arr_spikes[NUM_PER_PE] = {0};
 unsigned int ref_period[NUM_PER_PE] = {0};
 //For each neuron, there SYN_PER_NEURON max incoming and outgoing synapses. Within the PE, the network can be fully connencted
@@ -20,8 +24,6 @@ unsigned int t_spikes[1000000];
 
 unsigned int comm[NUM_PE] = {0};
 
-behavior PE_node(unsigned int id)
-{
 	unsigned int my_PE_addr;
 
 	//Local clock for each PE
@@ -117,7 +119,7 @@ behavior PE_node(unsigned int id)
 				adr = value_i & 0xFFFF0000;
 				if(adr==PE_ADDR[my_PE_addr]) 
 				{
-					spikes[max_spikes] = value_i & 0x0000FFFF;
+					spikes[max_spikes] = value_i;
 					max_spikes++;
 				}
                                 i=0;
@@ -169,6 +171,8 @@ behavior PE_node(unsigned int id)
 	void initialize()
 	{
 		int i,j;
+		tsync = 0;
+		start = 0;
 		my_PE_addr = id;
 		//Initialization
 		for(i=0; i<NUM_PER_PE; i++)	
@@ -188,7 +192,6 @@ behavior PE_node(unsigned int id)
 		int i;	
 		i = dest_neuron_addr & 0x0000FFFF;
 
-		if(time > (t_local+t_delay)) printf("Sync error\n");
 
 		//Model current calulation time accurately?
 		//Calculate average time at which spike occured
@@ -203,18 +206,34 @@ behavior PE_node(unsigned int id)
 	{
 		packet p;
 		int i;
-		//receiver.read(p);
-		register_spikes(p.sender, p.target, p.time);
 
-		//Accumulate stats for communication
-		for(i=0; i<NUM_PE; i++)
-		if(PE_ADDR[i]==(p.sender & 0xFFFF0000)) {
-			comm[i]++;
-			break;
-		}	
+		// Nothing in channel, don't read
+		if(start==end){}
+		else 
+		{
+			router_to_pe.receive(&p);
+			register_spikes(p.sender, p.target, p.time);
+
+			//Accumulate stats for communication
+			for(i=0; i<NUM_PE; i++)
+			if(PE_ADDR[i]==(p.sender & 0xFFFF0000)) {
+				comm[i]++;
+				break;
+			}
+			start = (start+1)%QUEUE_SIZE;
+		}
 	}
 
-	void send_spikes_external(unsigned int neuron_addr, unsigned int post_addr, unsigned int t_local) {}
+	void send_spikes_external(unsigned int neuron_addr, unsigned int post_addr, unsigned int t_local) {
+	
+		packet p;
+		p.sender = neuron_addr;
+		p.time = t_local;
+		p.target = post_addr;
+	
+		pe_to_router.send(p);
+
+	}
 
 	void send_spikes_internal(unsigned int neuron_addr, unsigned int post_addr, unsigned int t_local)
 	{
@@ -267,8 +286,7 @@ behavior PE_node(unsigned int id)
 	void compute_voltages()
 	{
 		int i;
-		unsigned int n;
-		printf("At time %f", time*0.1);
+		unsigned int n, n_d;
 
 		//Iterate over all neurons 
 		for(i=0; i<NUM_PER_PE; i++)
@@ -283,24 +301,27 @@ behavior PE_node(unsigned int id)
 			{
 				//Computation delay added here
 				//Replay spikes
-				waitfor(500);
 				if(t_spikes[spikes_i]==time)
 				{
-					n = spikes[spikes_i];
-					if(ref_period[n]!=0) ref_period[n]--;
+					n = spikes[spikes_i] & 0x0000FFFF;
+					n_d = spikes[spikes_i];
+					if(ref_period[n]!=0) 
+					{
+						ref_period[n]--;
+					}
 					else{
 					
+						waitfor(500);
 						ref_period[n] = 200;
+						printf("%u in %d Spiked at %u \n", n_d, my_PE_addr, time);
 						send_spikes(n);
 						spikes_i++;
-						printf(" %d Spiked ", n);
 						//print_times();
 					}
 				}
 			}
 
 		}
-		printf("\n");
 	}
 	void main()
 	{
@@ -310,16 +331,21 @@ behavior PE_node(unsigned int id)
 		//Time step
 		while(time<SIM_TIME)
 		{
-
+			if((my_PE_addr==14)&&time==156)
+			{	
+				int t = 0;
+			}
 			read_spikes_external();		
 			compute_currents();
 			compute_voltages();	
 			//Advance time step now
 			time = time + TIME_STEP;
+			tsync = 1;
+			while(tsync==1) waitfor(100);
 		}
 		
 		accumulate_stats();
-		print_spikes();	
+		printf("%d Done!", my_PE_addr);
 	}	
 
 };

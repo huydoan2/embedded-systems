@@ -10,7 +10,8 @@ behavior Router(in int id_x, in int id_y,
 				i_packet_receiver buffer,
 				i_packet_sender router_pe,
 				i_packet_sender s0, i_packet_sender s1, i_packet_sender s2,
-				i_packet_sender s3, i_packet_sender s4, i_packet_sender s5)
+				i_packet_sender s3, i_packet_sender s4, i_packet_sender s5, 
+				in int start, inout int end)
 	{
 		int random_factor = 0;
 		// Setup constants
@@ -266,6 +267,7 @@ behavior Router(in int id_x, in int id_y,
 			// 	unsigned int time,
 			// 	unsigned int dest
 			// }
+			end = 0;
 			while(true){
 				packet p;
 				unsigned int s, time, len;
@@ -273,6 +275,7 @@ behavior Router(in int id_x, in int id_y,
 				int s_x, s_y;
 				int t_x, t_y;
 
+				
 				buffer.receive(&p);	
 
 				//t = getPEAddress(p.target);				
@@ -282,6 +285,7 @@ behavior Router(in int id_x, in int id_y,
 					// Reach the target PE
 					// Deliver the spike and neuron address to the PE
 					router_pe.send(p);
+					end = (end+1)%100;
 					continue;
 				}
 

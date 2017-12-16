@@ -1,6 +1,3 @@
-# -----------------------------------
-# Makefile for Susan Edge Detection example
-# ----------------------------------- 
 
 # --- Macros
 
@@ -9,14 +6,14 @@ GCC = g++
 CFLAGS = -std=c++0x -g
 RM  = rm -f
 
-SCFILES = snn.sh neuron_model.sh synaptic_model.sh PE_replay.sc main.sc
+SCFILES = snn.sh neuron_model.sh synaptic_model.sh c_packet_queue.sc PE_replay.sc monitor.sc router.sc design.sc main.sc
 
 CPARTFILES = partition.cpp
 COPTFILES = optimize.cpp
 
-SIRFILES = PE_replay.sir main.sir
+SIRFILES = PE_replay.sir monitor.sir c_packet_queue.sir router.sir design.sir main.sir
 
-SCCOPTS = -vv -ww -g 
+SCCOPTS = -vv -ww -g -d 
 
 EXEFILE = main
 PARTEXE = partition
@@ -44,7 +41,7 @@ $(OPTEXE): $(COPTFILES)
 	$(GCC) $(CFLAGS) $(COPTFILES) -o $(OPTEXE)
 
 clean:
-	$(RM) *~ *.si *.o *.h *.cc out*.pgm
+	$(RM) *~ *.si *.o *.h *.cc *.sir
 	$(RM) $(SIRFILES) 
 	$(RM) $(EXEFILE) $(EXEFILE_PAR)
 	$(RM) $(PARTEXE) $(OPTEXE)

@@ -10,6 +10,7 @@
 #define TIME_STEP 1    //in units of 0.1ms
 #define SIM_TIME 500  //in units of 0.1ms
 
+const unsigned long QUEUE_SIZE = 100;
 const unsigned int PE_ADDR[NUM_PE] = {	
 					0xFD030000,
 					0xFE030000,
